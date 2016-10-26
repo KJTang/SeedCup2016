@@ -245,17 +245,17 @@ public:
 
 class ASTStatDo : public ASTNode {
 private:
-    ASTNode* condition_;
     ASTNode* block_;
+    ASTNode* condition_;
 public:
-    ASTStatDo(int line, ASTNode* condition, ASTNode* block) : condition_(condition), block_(block) {
+    ASTStatDo(int line, ASTNode* block, ASTNode* condition) : block_(block), condition_(condition) {
         set_line(line);
-        condition_->set_parent(this);
         block_->set_parent(this);
+        condition_->set_parent(this);
     }
     ~ASTStatDo() {
-        delete condition_;
         delete block_;
+        delete condition_;
     }
     
     // Test
@@ -273,26 +273,44 @@ private:
     ASTNode* increase_;
     ASTNode* block_;
 public:
-    ASTStatFor(int line, ASTNode* condition, ASTNode* block) : condition_(condition), block_(block) {
+    ASTStatFor(int line, ASTNode* init, ASTNode* condition, ASTNode* increase, ASTNode* block) : init_(init), condition_(condition), increase_(increase), block_(block) {
         set_line(line);
-        init_->set_parent(this);
-        condition_->set_parent(this);
-        increase_->set_parent(this);
+        if (init_) {
+            init_->set_parent(this);
+        }
+        if (condition_) {
+            condition_->set_parent(this);
+        }
+        if (increase_) {
+            increase_->set_parent(this);
+        }
         block_->set_parent(this);
     }
     ~ASTStatFor() {
-        delete init_;
-        delete condition_;
-        delete increase_;
+        if (init_) {
+            delete init_;
+        }
+        if (condition_) {
+            delete condition_;
+        }
+        if (increase_) {
+            delete increase_;
+        }
         delete block_;
     }
     
     // Test
     virtual void Print() {
         std::cout<<"ASTStatFor: \t"<<"for"<<std::endl;
-        init_->Print();
-        condition_->Print();
-        increase_->Print();
+        if (init_) {
+            init_->Print();
+        }
+        if (condition_) {
+            condition_->Print();
+        }
+        if (increase_) {
+            increase_->Print();
+        }
         block_->Print();
     }  
 };

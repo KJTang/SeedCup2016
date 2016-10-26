@@ -3,17 +3,6 @@
 #include <iostream>
 #include <stack>
 
-// #define ERR(line, str) \
-// do { \
-//     err_occur_ = true; \
-//     ErrorHandler::GetInstance()->ThrowError(line, str); \
-// } while (false);
-
-// #define WARN(line, str) \
-// do { \
-//     ErrorHandler::GetInstance()->ThrowWarning(line, str); \
-// } while (false);
-
 Parser::Parser() {}
 
 Parser::~Parser() {
@@ -76,13 +65,6 @@ ASTNode* Parser::ParseStatement() {
             cur_token_ = tokens_[pos_++];
             return ParseStatement();
         }
-        case static_cast<Token>('}'): {
-            if (block_count_ <= 0) {
-                // WARN(cur_token_->line, "unexpected token '}'");
-                cur_token_ = tokens_[pos_++];   // eat '}'
-                return ParseStatement();
-            }
-        }
         case Token::IDENTIFIER: {
             if (tokens_[pos_]->type == static_cast<Token>('=')) {
                 return ParseStatAssign(ParseVariable());
@@ -94,64 +76,41 @@ ASTNode* Parser::ParseStatement() {
             return ParseExpression();
         }
         default: {
-            // ERR(cur_token_->line, "invalid expression");
-            // std::cout<<cur_token_->value<<std::endl;
             return nullptr;
         }
     }
 }
 
 ASTNode* Parser::ParseBlock() {
-    std::cout<<"ParseBlock: "<<cur_token_->value<<std::endl;
-
     int line = cur_token_->line;
-    cur_token_ = tokens_[pos_++];   // eat '{'
-    ++block_count_;
+    cur_token_ = tokens_[pos_++];             // eat '{'
     std::vector<ASTNode*> statements;
 
-    if (static_cast<int>(cur_token_->type) == '}') {
-        cur_token_ = tokens_[pos_++];   // eat '}'
-        --block_count_;
-    } else {
-        bool is_finished = false;
-        while (!is_finished) {
+    if (static_cast<int>(cur_token_->type) != '}') {
+        do {
             ASTNode* stat = ParseStatement();
             if (stat) {
                 statements.push_back(stat);
             }
-            if (static_cast<int>(cur_token_->type) == '}') {
-                is_finished = true;
-            }
-        }
-        cur_token_ = tokens_[pos_++];   // eat '}'
-        --block_count_;
+        } while (cur_token_->type != static_cast<Token>('}'));
     }
-
-    ASTNode* node = new ASTBlock(line, statements);
-    return node;
+    cur_token_ = tokens_[pos_++];             // eat '}'
+    return new ASTBlock(line, statements);
 }
 
 ASTNode* Parser::ParseConstInt() {
-    std::cout<<"ParseConstInt: "<<cur_token_->value<<std::endl;
-
     int line = cur_token_->line;
-    ASTNode* node = new ASTConstInt(line, cur_token_->value);
     cur_token_ = tokens_[pos_++];
-    return node;
+    return new ASTConstInt(line, cur_token_->value);
 }
 
 ASTNode* Parser::ParseConstString() {
-    std::cout<<"ParseConstString: "<<cur_token_->value<<std::endl;
-
     int line = cur_token_->line;
-    ASTNode* node = new ASTConstString(line, cur_token_->value);
     cur_token_ = tokens_[pos_++];
-    return node;
+    return new ASTConstString(line, cur_token_->value);
 }
 
 ASTNode* Parser::ParseVariable() {
-    std::cout<<"ParseVariable: "<<cur_token_->value<<std::endl;
-
     int line = cur_token_->line;
     ASTNode* node = new ASTVariable(line, cur_token_->value);
     cur_token_ = tokens_[pos_++];
@@ -163,37 +122,29 @@ ASTNode* Parser::ParseVariable() {
 }
 
 ASTNode* Parser::ParseStatDeclare() {
-    std::cout<<"ParseStatDeclare: "<<cur_token_->value<<std::endl;
-
     int line = cur_token_->line;
     std::vector<ASTNode*> var_list;
     do {
-        cur_token_ = tokens_[pos_++];   // eat "int" or ','
+        cur_token_ = tokens_[pos_++];            // eat "int" or ','
         ASTNode* var = ParseVariable();
         if (cur_token_->type == static_cast<Token>('=')) {
             var = ParseStatAssign(var);
         }
         var_list.push_back(var);
     } while (cur_token_->type == static_cast<Token>(','));
-    ASTNode* node = new ASTStatDeclare(line, var_list);
-    return node;
+    return new ASTStatDeclare(line, var_list);
 }
 
 ASTNode* Parser::ParseStatAssign(ASTNode* var) {
-    std::cout<<"ParseStatAssign: "<<cur_token_->value<<std::endl;
-
     int line = cur_token_->line;
-    cur_token_ = tokens_[pos_++];       // eat '='
+    cur_token_ = tokens_[pos_++];               // eat '='
     ASTNode* expr = ParseExpression();
-    ASTNode* node = new ASTStatAssign(line, var, expr);
-    return node;
+    return new ASTStatAssign(line, var, expr);
 }
 
 ASTNode* Parser::ParseStatIf() {
-    std::cout<<"ParseStatIf: "<<cur_token_->value<<std::endl;
-
     int line = cur_token_->line;
-    cur_token_ = tokens_[pos_++];       // eat "if"
+    cur_token_ = tokens_[pos_++];               // eat "if"
     ASTNode* condition = ParseExpression();
     ASTNode* if_block = nullptr;
     if (cur_token_->type == static_cast<Token>('{')) {
@@ -203,44 +154,143 @@ ASTNode* Parser::ParseStatIf() {
     }
     ASTNode* else_block = nullptr;
     if (cur_token_->type == Token::KEYWORD_ELSE) {
-        cur_token_ = tokens_[pos_++];       // eat "else"
+        cur_token_ = tokens_[pos_++];           // eat "else"
         if (cur_token_->type == static_cast<Token>('{')) {
             else_block = ParseBlock();
         } else {
             else_block = ParseStatement();
         }
     }
-    ASTNode* node = new ASTStatIf(line, condition, if_block, else_block);
-    return node;
+    return new ASTStatIf(line, condition, if_block, else_block);
 }
 
 ASTNode* Parser::ParseStatWhile() {
-    std::cout<<"ParseStatWhile: "<<cur_token_->value<<std::endl;
+    int line = cur_token_->line;
+    cur_token_ = tokens_[pos_++];           // eat "while"
+    std::stack<ASTNode*> condition_stack;
+    do {
+        cur_token_ = tokens_[pos_++];       // eat '(' or ','
+        condition_stack.push(ParseStatement());
+    } while (cur_token_->type != static_cast<Token>(')'));
+    while (condition_stack.size() >= 2) {
+        ASTNode* r_node = condition_stack.top();
+        condition_stack.pop();
+        ASTNode* l_node = condition_stack.top();
+        condition_stack.pop();
+        condition_stack.push(ParseExprComma(l_node, r_node));
+    }
+    ASTNode* condition = condition_stack.top();
+    cur_token_ = tokens_[pos_++];           // eat ')'
 
-    return nullptr;
+    ASTNode* block = nullptr;
+    if (cur_token_->type == static_cast<Token>('{')) {
+        block = ParseBlock();
+    } else {
+        block = ParseStatement();
+    }
+    return new ASTStatWhile(line, condition, block);
 }
 
 ASTNode* Parser::ParseStatDo() {
-    std::cout<<"ParseStatDo: "<<cur_token_->value<<std::endl;
-
-    return nullptr;
+    int line = cur_token_->line;
+    cur_token_ = tokens_[pos_++];           // eat "do"
+    ASTNode* block = nullptr;
+    if (cur_token_->type == static_cast<Token>('{')) {
+        block = ParseBlock();
+    } else {
+        block = ParseStatement();
+    }
+    cur_token_ = tokens_[pos_++];           // eat "while"
+    std::stack<ASTNode*> condition_stack;
+    do {
+        cur_token_ = tokens_[pos_++];       // eat '(' or ','
+        condition_stack.push(ParseStatement());
+    } while (cur_token_->type != static_cast<Token>(')'));
+    while (condition_stack.size() >= 2) {
+        ASTNode* r_node = condition_stack.top();
+        condition_stack.pop();
+        ASTNode* l_node = condition_stack.top();
+        condition_stack.pop();
+        condition_stack.push(ParseExprComma(l_node, r_node));
+    }
+    ASTNode* condition = condition_stack.top();
+    cur_token_ = tokens_[pos_++];           // eat ')'
+    return new ASTStatDo(line, block, condition);
 }
 
 ASTNode* Parser::ParseStatFor() {
-    std::cout<<"ParseStatFor: "<<cur_token_->value<<std::endl;
+    int line = cur_token_->line;
+    cur_token_ = tokens_[pos_++];           // eat "for"
 
-    return nullptr;
+    std::stack<ASTNode*> init_stack;
+    std::stack<ASTNode*> condition_stack;
+    std::stack<ASTNode*> increase_stack;
+    // init
+    if (tokens_[pos_]->type != static_cast<Token>(';')) {
+        do {
+            cur_token_ = tokens_[pos_++];       // eat '(' or ','
+            init_stack.push(ParseStatement());
+        } while (cur_token_->type != static_cast<Token>(';'));
+        while (init_stack.size() >= 2) {
+            ASTNode* r_node = init_stack.top();
+            init_stack.pop();
+            ASTNode* l_node = init_stack.top();
+            init_stack.pop();
+            init_stack.push(ParseExprComma(l_node, r_node));
+        }
+    }
+    ASTNode* init = init_stack.empty() ? nullptr : init_stack.top();
+    // condition
+    if (tokens_[pos_]->type != static_cast<Token>(';')) {
+        do {
+            cur_token_ = tokens_[pos_++];       // eat ';' or ','
+            condition_stack.push(ParseStatement());
+        } while (cur_token_->type != static_cast<Token>(';'));
+        while (condition_stack.size() >= 2) {
+            ASTNode* r_node = condition_stack.top();
+            condition_stack.pop();
+            ASTNode* l_node = condition_stack.top();
+            condition_stack.pop();
+            condition_stack.push(ParseExprComma(l_node, r_node));
+        }
+    }
+    ASTNode* condition = condition_stack.empty() ? nullptr : condition_stack.top();
+    // increase    
+    if (tokens_[pos_]->type != static_cast<Token>(')')) {
+        do {
+            cur_token_ = tokens_[pos_++];       // eat ';' or ','
+            increase_stack.push(ParseStatement());
+        } while (cur_token_->type != static_cast<Token>(')'));
+        while (increase_stack.size() >= 2) {
+            ASTNode* r_node = increase_stack.top();
+            increase_stack.pop();
+            ASTNode* l_node = increase_stack.top();
+            increase_stack.pop();
+            increase_stack.push(ParseExprComma(l_node, r_node));
+        }
+    } else {
+        cur_token_ = tokens_[pos_++];           // eat ';'
+    }
+    ASTNode* increase = increase_stack.empty() ? nullptr : increase_stack.top();
+    // block
+    cur_token_ = tokens_[pos_++];               // eat ')'
+    ASTNode* block = nullptr;
+    if (cur_token_->type == static_cast<Token>('{')) {
+        block = ParseBlock();
+    } else {
+        block = ParseStatement();
+    }
+
+    return new ASTStatFor(line, init, condition, increase, block);
 }
 
 ASTNode* Parser::ParseStatBreak() {
-    std::cout<<"ParseStatBreak: "<<cur_token_->value<<std::endl;
-
-    return nullptr;
+    int line = cur_token_->line;
+    cur_token_ = tokens_[pos_++];
+    return new ASTStatBreak(line);
 }
 
 ASTNode* Parser::ParseExpression() {
-    std::cout<<"ParseExpression: "<<cur_token_->value<<std::endl;
-
     int line = cur_token_->line;
     std::stack<ASTNode*> var_stack;
     std::stack<Token> op_stack;
@@ -321,7 +371,6 @@ ASTNode* Parser::ParseExpression() {
             }
             default: {
                 // ')', ';', ...
-                std::cout<<"ParseExpression: Finished"<<std::endl;
                 is_finished = true;
                 break;
             }
@@ -360,8 +409,6 @@ ASTNode* Parser::ParseExpression() {
 }
 
 ASTNode* Parser::ParseExprParen() {
-    std::cout<<"ParseExprParen: "<<cur_token_->value<<std::endl;
-
     int line = cur_token_->line;
     cur_token_ = tokens_[pos_++];       // eat '('
     ASTNode* expr = ParseExpression();
@@ -374,21 +421,14 @@ ASTNode* Parser::ParseExprParen() {
 }
 
 ASTNode* Parser::ParseExprSingle(ASTNode* var, Token op) {
-    std::cout<<"ParseExprSingle: "<<var->get_value()<<std::endl;
-
-    ASTNode* node = new ASTExprSingle(var->get_line(), var, op);
-    return node;
+    return new ASTExprSingle(var->get_line(), var, op);
 }
 
-ASTNode* Parser::ParseExprComma() {
-    std::cout<<"ParseExprComma: "<<cur_token_->value<<std::endl;
-
-    return nullptr;
+ASTNode* Parser::ParseExprComma(ASTNode* l, ASTNode* r) {
+    return new ASTExprComma(l->get_line(), l, r);
 }
 
 ASTNode* Parser::ParseExprCallfunc(ASTNode* var) {
-    std::cout<<"ParseCallFunc: "<<var->get_value()<<std::endl;
-
     int line = cur_token_->line;
     std::vector<ASTNode*> parameters;
     do {
@@ -401,6 +441,5 @@ ASTNode* Parser::ParseExprCallfunc(ASTNode* var) {
     } else {
         cur_token_ = tokens_[pos_++];
     }
-    ASTNode* node = new ASTExprCallFunc(line, var, parameters);
-    return node;
+    return new ASTExprCallFunc(line, var, parameters);
 }

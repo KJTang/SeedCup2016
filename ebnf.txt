@@ -1,0 +1,20 @@
+const-int = ...
+const-string = ...
+variable = ...
+
+block = "{", [ statement, { ";", statement } ], "}"
+
+statement = stat-declare | stat-assign | stat-if | stat-while | stat-do | stat-for | stat-break | expression | expr-comma
+stat-declare = "int", variable | stat-assign, { ",", variable | stat-assign }
+stat-assign = variable, "=", const-int | expression
+stat-if = "if", "(", expression, ")", statement | block, { "else", statement | block }
+stat-while = "while", "(", expression, ")", statement | block
+stat-do = "do", statement | block, "while", "(", expression, ")"
+stat-for = "for", "(", expression, ";", expression, ";", expression, ")", statement | block
+stat-break = "break"
+
+expr-single = (variable, "++" | "--") | ("-", variable)
+expr-comma = expression, ",", expression
+expr-callfunc = variable, "(", expression, { ",", expression } ")"
+expression = variable | expr-single | expr-callfunc, { operator, variable | expr-single | expr-callfunc }
+

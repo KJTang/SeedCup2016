@@ -27,8 +27,11 @@
 
 #include <string>
 #include <vector>
+#include <cassert>
 
 #include "lexer.h"
+#include "Environment.h"
+#include "Evaluator.h"
 
 // enum class ASTTYPE {
 //     ASTNODE,
@@ -69,6 +72,8 @@ public:
 
     // Test
     virtual void Print() {}
+
+	virtual int eval(Environment<int>& env) { return 0; }
 };
 
 class ASTBlock : public ASTNode {
@@ -94,6 +99,8 @@ public:
             statements_[i]->Print();
         }
     }
+
+	virtual int eval(Environment<int>& env);
 };
 
 class ASTConstInt : public ASTNode {
@@ -108,6 +115,7 @@ public:
     virtual void Print() {
         std::cout<<"ASTConstInt: \t"<<get_value()<<std::endl;
     }
+	virtual int eval(Environment<int>& env);
 };
 
 class ASTConstString : public ASTNode {
@@ -122,6 +130,7 @@ public:
     virtual void Print() {
         std::cout<<"ASTConstString: \t"<<get_value()<<std::endl;
     }
+	virtual int eval(Environment<int>& env);
 };
 
 class ASTVariable : public ASTNode {
@@ -136,6 +145,7 @@ public:
     virtual void Print() {
         std::cout<<"ASTVariable: \t"<<get_value()<<std::endl;
     }
+	virtual int eval(Environment<int>& env);
 };
 
 class ASTStatDeclare : public ASTNode {
@@ -161,6 +171,7 @@ public:
             var_list_[i]->Print();
         }
     }
+	virtual int eval(Environment<int>& env);
 };
 
 class ASTStatAssign : public ASTNode {
@@ -184,6 +195,7 @@ public:
         var_->Print();
         expr_->Print();
     }
+	virtual int eval(Environment<int>& env);
 };
 
 class ASTStatIf : public ASTNode {
@@ -218,6 +230,7 @@ public:
             else_block_->Print();
         }
     }  
+	virtual int eval(Environment<int>& env);
 };
 
 class ASTStatWhile : public ASTNode {
@@ -241,6 +254,7 @@ public:
         condition_->Print();
         block_->Print();
     }  
+	virtual int eval(Environment<int>& env);
 };
 
 class ASTStatDo : public ASTNode {
@@ -264,6 +278,7 @@ public:
         block_->Print();
         condition_->Print();
     }  
+	virtual int eval(Environment<int>& env);
 };
 
 class ASTStatFor : public ASTNode {
@@ -313,6 +328,7 @@ public:
         }
         block_->Print();
     }  
+	virtual int eval(Environment<int>& env);
 };
 
 class ASTStatBreak : public ASTNode {
@@ -326,6 +342,7 @@ public:
     virtual void Print() {
         std::cout<<"ASTStatBreak: \t"<<"break"<<std::endl;
     }
+	virtual int eval(Environment<int>& env);
 };
 
 class ASTExprSingle : public ASTNode {
@@ -360,6 +377,7 @@ public:
         std::cout<<"ASTExprSingle: \t"<<str<<std::endl;
         var_->Print();
     }  
+	virtual int eval(Environment<int>& env);
 };
 
 class ASTExprComma : public ASTNode {
@@ -383,6 +401,7 @@ public:
         expra_->Print();
         exprb_->Print();
     }  
+	virtual int eval(Environment<int>& env);
 };
 
 class ASTExprCallFunc : public ASTNode {
@@ -412,6 +431,7 @@ public:
             parameters_[i]->Print();
         }
     }
+	virtual int eval(Environment<int>& env);
 };
 
 class ASTExpression : public ASTNode {
@@ -458,4 +478,5 @@ public:
         l_node_->Print();
         r_node_->Print();
     }
+	virtual int eval(Environment<int>& env);
 };

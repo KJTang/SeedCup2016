@@ -28,6 +28,7 @@ bool Lexer::Lex() {
     do {
         result = this->LexToken();
     } while (result != Token::END_OF_FILE);
+	return true;
 }
 
 Token Lexer::LexToken() {

@@ -34,7 +34,7 @@ bool Lexer::Lex() {
 Token Lexer::LexToken() {
     cur_char_ = raw_str_[pos_++];
     // shift space and '\n'
-    while (cur_char_ == ' ' || cur_char_ == '\n') {
+    while (cur_char_ == ' ' || cur_char_ == '\r'|| cur_char_ == '\n') {
         if (cur_char_ == '\n') {
             ++line_;
         }
@@ -133,8 +133,11 @@ Token Lexer::LexToken() {
             if (raw_str_[pos_] == '/') {
                 do {
                     cur_char_ = raw_str_[pos_++];
-                } while (cur_char_ != '\0' && cur_char_ != '\n');
+                } while (cur_char_ != '\0' && cur_char_ != '\r' && cur_char_ != '\n');
                 if (cur_char_ != '\0') {
+                    if (cur_char_ == '\r') {
+                        cur_char_ = raw_str_[pos_++];   // eat '\r'
+                    }
                     ++line_;
                     return this->LexToken();
                 } else {
@@ -146,6 +149,9 @@ Token Lexer::LexToken() {
                 do {
                     cur_char_ = raw_str_[pos_++];
                     if (cur_char_ == '\n') {
+                        ++line_;
+                    } else if (cur_char_ == '\r') {
+                        cur_char_ = raw_str_[pos_++];   // eat '\r'
                         ++line_;
                     } else if (cur_char_ == '*') {
                         if (raw_str_[pos_] == '/') {

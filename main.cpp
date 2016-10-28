@@ -25,8 +25,8 @@ int main(int argc, char *args[]) {
         std::cout<<"code file not given"<<std::endl;
         return 0;
     }
-    //std::ifstream fin(args[1]);
-	std::ifstream fin("input.txt");
+    std::ifstream fin(args[1]);
+	// std::ifstream fin("input.txt");
     // compiler input & lexer input
     std::string input_str((std::istreambuf_iterator<char>(fin)), std::istreambuf_iterator<char>());
     // lexer output & parser input
@@ -47,9 +47,9 @@ int main(int argc, char *args[]) {
     parser.Output(astnode_list);
 
 
-	Evaluator evaluator(astnode_list);
-	evaluator.eval_prog();
-	evaluator.output();
+	// Evaluator evaluator(astnode_list);
+	// evaluator.eval_prog();
+	// evaluator.output();
 
     // analyser.Input(astnode_list);
     // analyser.Analysis();

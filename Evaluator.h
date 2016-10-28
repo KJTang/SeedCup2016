@@ -1,5 +1,9 @@
 ﻿#pragma once
 
+#include <string>
+#include <sstream>
+#include <iostream>
+#include <fstream>
 #include "Environment.h"
 #include "astnode.h"
 
@@ -13,7 +17,8 @@ public:
 	}
 
 	bool eval_prog();
-	void output();
+	std::string output();
+	void output2file();
 
 	static void push_line(int l);
 	static vector<int> lines;

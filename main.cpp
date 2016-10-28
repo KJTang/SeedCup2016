@@ -49,7 +49,7 @@ int main(int argc, char *args[]) {
 
 	Evaluator evaluator(astnode_list);
 	evaluator.eval_prog();
-	evaluator.output();
+	evaluator.output2file();
 
     // analyser.Input(astnode_list);
     // analyser.Analysis();

@@ -15,8 +15,18 @@ void Evaluator::push_line(int l) {
 	}
 }
 
-void Evaluator::output() {
+std::string Evaluator::output() {
+	std::stringstream ss;
 	for (auto i : lines) {
-		std::cout << i << " ";
+		ss << i << " ";
 	}
+	std::string str = ss.str().substr(0, ss.str().length() - 1);
+	return str;
+}
+
+void Evaluator::output2file() {
+	ofstream file;
+	file.open("output.txt");
+	file << output();
+	file.close();
 }

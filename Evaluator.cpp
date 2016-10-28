@@ -10,8 +10,8 @@ bool Evaluator::eval_prog() {
 }
 
 void Evaluator::push_line(int l) {
-	if (*(Evaluator::lines.end() - 1) != l) {
-		Evaluator::lines.push_back(l);
+	if (lines.empty() || *(lines.end() - 1) != l) {
+		lines.push_back(l);
 	}
 }
 

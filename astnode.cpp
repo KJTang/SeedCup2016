@@ -29,7 +29,6 @@ int ASTVariable::eval(Environment<int>& env) {
 }
 
 int ASTStatDeclare::eval(Environment<int>& env) {
-	Evaluator::push_line(get_line());
 	for (auto var : var_list_) {
 		var->eval(env);
 	}

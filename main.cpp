@@ -47,9 +47,9 @@ int main(int argc, char *args[]) {
     parser.Output(astnode_list);
 
 
-	// Evaluator evaluator(astnode_list);
-	// evaluator.eval_prog();
-	// evaluator.output();
+	Evaluator evaluator(astnode_list);
+	evaluator.eval_prog();
+	evaluator.output();
 
     // analyser.Input(astnode_list);
     // analyser.Analysis();

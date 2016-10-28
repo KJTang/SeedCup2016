@@ -40,7 +40,7 @@ bool Parser::Parse() {
 ASTNode* Parser::ParseStatement() {
     switch (cur_token_->type) {
         case Token::END_OF_FILE: {
-            cur_token_ = tokens_[pos_++];
+            // cur_token_ = tokens_[pos_++];
             return nullptr;
         }
         case Token::KEYWORD_INT: {

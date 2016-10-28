@@ -34,7 +34,7 @@ bool Lexer::Lex() {
 Token Lexer::LexToken() {
     cur_char_ = raw_str_[pos_++];
     // shift space and '\n'
-    while (cur_char_ == ' ' || cur_char_ == '\r'|| cur_char_ == '\n') {
+    while (cur_char_ == ' ' || cur_char_ == '\r' || cur_char_ == '\t' || cur_char_ == '\n') {
         if (cur_char_ == '\n') {
             ++line_;
         }

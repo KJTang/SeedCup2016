@@ -62,7 +62,7 @@ public:
     virtual ~ASTNode() {}
 
     void set_value(const std::string& value) { value_ = value; }
-    std::string get_value() { return value_; }
+    virtual std::string get_value() { return value_; }
 
     void set_parent(ASTNode* parent) { parent_ = parent; }
     ASTNode* get_parent() { return parent_; }
@@ -188,6 +188,10 @@ public:
         delete var_;
         delete expr_;
     }
+
+	virtual std::string get_value() {
+		return var_->get_value();
+	}
 
     // Test
     virtual void Print() {

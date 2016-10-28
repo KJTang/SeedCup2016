@@ -30,6 +30,7 @@ int ASTVariable::eval(Environment<int>& env) {
 
 int ASTStatDeclare::eval(Environment<int>& env) {
 	for (auto var : var_list_) {
+		env.add_var(var->get_value());
 		var->eval(env);
 	}
 	return 1;
@@ -37,7 +38,7 @@ int ASTStatDeclare::eval(Environment<int>& env) {
 
 int ASTStatAssign::eval(Environment<int>& env) {
 	Evaluator::push_line(get_line());
-	env.add_var(var_->get_value(), expr_->eval(env));
+	env.update_var(var_->get_value(), expr_->eval(env));
 	return 1;
 }
 
@@ -106,17 +107,17 @@ int ASTExprSingle::eval(Environment<int>& env) {
 	{
 	case Token::OP_INCREASE: {
 		temp += 1;
-		env.add_var(var_->get_value(), temp);
+		env.update_var(var_->get_value(), temp);
 		break;
 	}
 	case Token::OP_DECREASE: {
 		temp -= 1;
-		env.add_var(var_->get_value(), temp);
+		env.update_var(var_->get_value(), temp);
 		break;
 	}
 	case static_cast<Token>('-'): {
 		temp = -temp;
-		env.add_var(var_->get_value(), temp);
+		env.update_var(var_->get_value(), temp);
 		break;
 	}
 	default:

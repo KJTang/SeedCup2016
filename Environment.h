@@ -13,7 +13,8 @@ public:
 
 	bool is_var_exist(string var_name);
 	T lookup_var(string var_name);
-	bool add_var(string var_name, T value);
+	bool add_var(string var_name);
+	bool update_var(string var_name, T value);
 
 	bool getin_new_scope();
 	bool getout_a_scope();
@@ -21,6 +22,7 @@ private:
 	vector<unordered_map<string, T>> scopes_;
 	bool is_var_exist(string var_name, int scope_layer);
 	T lookup_var(string var_name, int scope_layer);
+	bool update_var(string var_name, T value, int scope_layer);
 	int cur_scope_;
 };
 
@@ -78,7 +80,24 @@ T Environment<T>::lookup_var(string var_name, int scope_layer) {
 }
 
 template<typename T>
-bool Environment<T>::add_var(string var_name, T value) {
-	scopes_[cur_scope_][var_name] = value;
+bool Environment<T>::add_var(string var_name) {
+	scopes_[cur_scope_][var_name] = 0;
 	return true;
+}
+
+template<typename T>
+bool Environment<T>::update_var(string var_name, T value) {
+	return update_var(var_name, value, cur_scope_);
+}
+
+template<typename T>
+bool Environment<T>::update_var(string var_name, T value, int scope_layer) {
+	if (scope_layer < 0) {
+		return false;
+	}
+	if (scopes_[scope_layer].count(var_name)) {
+		scopes_[scope_layer][var_name] = value;
+		return true;
+	}
+	return update_var(var_name, value, scope_layer - 1);
 }

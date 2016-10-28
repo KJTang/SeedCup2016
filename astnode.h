@@ -94,7 +94,7 @@ public:
 
     // Test
     virtual void Print() {
-        std::cout<<"ASTBlock: \t"<<"{"<<statements_.size()<<"}"<<std::endl;
+        std::cout<<"ASTBlock: \t\t"<<"{"<<statements_.size()<<"}"<<std::endl;
         for (int i = 0; i != statements_.size(); ++i) {
             statements_[i]->Print();
         }
@@ -113,7 +113,7 @@ public:
     
     // Test
     virtual void Print() {
-        std::cout<<"ASTConstInt: \t"<<get_value()<<std::endl;
+        std::cout<<"ASTConstInt: \t\t"<<get_value()<<std::endl;
     }
 	virtual int eval(Environment<int>& env);
 };
@@ -143,7 +143,7 @@ public:
 
     // Test
     virtual void Print() {
-        std::cout<<"ASTVariable: \t"<<get_value()<<std::endl;
+        std::cout<<"ASTVariable: \t\t"<<get_value()<<std::endl;
     }
 	virtual int eval(Environment<int>& env);
 };
@@ -195,7 +195,7 @@ public:
 
     // Test
     virtual void Print() {
-        std::cout<<"ASTStatAssign: \t"<<"="<<std::endl;
+        std::cout<<"ASTStatAssign: \t\t"<<"="<<std::endl;
         var_->Print();
         expr_->Print();
     }
@@ -226,10 +226,10 @@ public:
 
     // Test
     virtual void Print() {
-        std::cout<<"ASTStatIf: \t"<<"if"<<std::endl;
+        std::cout<<"ASTStatIf: \t\t"<<"if"<<std::endl;
         condition_->Print();
         if_block_->Print();
-        std::cout<<"ASTStatIf: \t"<<"else"<<std::endl;
+        std::cout<<"ASTStatIf: \t\t"<<"else"<<std::endl;
         if (else_block_) {
             else_block_->Print();
         }
@@ -254,7 +254,7 @@ public:
     
     // Test
     virtual void Print() {
-        std::cout<<"ASTStatWhile: \t"<<"while"<<std::endl;
+        std::cout<<"ASTStatWhile: \t\t"<<"while"<<std::endl;
         condition_->Print();
         block_->Print();
     }  
@@ -278,7 +278,7 @@ public:
     
     // Test
     virtual void Print() {
-        std::cout<<"ASTStatDo: \t"<<"dowhile"<<std::endl;
+        std::cout<<"ASTStatDo: \t\t"<<"dowhile"<<std::endl;
         block_->Print();
         condition_->Print();
     }  
@@ -320,14 +320,17 @@ public:
     
     // Test
     virtual void Print() {
-        std::cout<<"ASTStatFor: \t"<<"for"<<std::endl;
+        std::cout<<"ASTStatFor: \t\t"<<"for"<<std::endl;
         if (init_) {
+            std::cout<<"ASTStatFor: \t\t"<<"init"<<std::endl;
             init_->Print();
         }
         if (condition_) {
+            std::cout<<"ASTStatFor: \t\t"<<"condition"<<std::endl;
             condition_->Print();
         }
         if (increase_) {
+            std::cout<<"ASTStatFor: \t\t"<<"increase"<<std::endl;
             increase_->Print();
         }
         block_->Print();
@@ -378,7 +381,7 @@ public:
                 str = (char)op_;
             }
         }
-        std::cout<<"ASTExprSingle: \t"<<str<<std::endl;
+        std::cout<<"ASTExprSingle: \t\t"<<str<<std::endl;
         var_->Print();
     }  
 	virtual int eval(Environment<int>& env);
@@ -401,7 +404,7 @@ public:
     
     // Test
     virtual void Print() {
-        std::cout<<"ASTExprComma: \t"<<std::endl;
+        std::cout<<"ASTExprComma: \t\t"<<","<<std::endl;
         expra_->Print();
         exprb_->Print();
     }  
@@ -478,7 +481,7 @@ public:
                 str = (char)op_;
             }
         }
-        std::cout<<"ASTExpression: \t"<<str<<std::endl;
+        std::cout<<"ASTExpression: \t\t"<<str<<std::endl;
         l_node_->Print();
         r_node_->Print();
     }

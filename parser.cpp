@@ -258,6 +258,8 @@ ASTNode* Parser::ParseStatFor() {
             init_stack.pop();
             init_stack.push(ParseExprComma(l_node, r_node));
         }
+    } else {
+        cur_token_ = tokens_[pos_++];
     }
     ASTNode* init = init_stack.empty() ? nullptr : init_stack.top();
     // condition
@@ -273,6 +275,8 @@ ASTNode* Parser::ParseStatFor() {
             condition_stack.pop();
             condition_stack.push(ParseExprComma(l_node, r_node));
         }
+    } else {
+        cur_token_ = tokens_[pos_++];
     }
     ASTNode* condition = condition_stack.empty() ? nullptr : condition_stack.top();
     // increase    

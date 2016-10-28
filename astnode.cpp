@@ -49,7 +49,9 @@ int ASTStatIf::eval(Environment<int>& env) {
 		flag = if_block_->eval(env);
 	}
 	else {
-		flag = else_block_->eval(env);
+		if (else_block_) {
+			flag = else_block_->eval(env);
+		}
 	}
 	return flag;
 }

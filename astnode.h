@@ -33,25 +33,6 @@
 #include "Environment.h"
 #include "Evaluator.h"
 
-// enum class ASTTYPE {
-//     ASTNODE,
-//     CONST_INT, 
-//     CONST_STRING, 
-//     VARIABLE, 
-//     BLOCK, 
-//     STAT_DECLARE, 
-//     STAT_ASSIGN, 
-//     STAT_IF, 
-//     STAT_WHILE, 
-//     STAT_DO, 
-//     STAT_FOR, 
-//     STAT_BREAK, 
-//     EXPR_SINGLE,
-//     EXPR_COMMA,
-//     EXPR_CALLFUNC, 
-//     EXPRESSION, 
-// };
-
 class ASTNode {
 private:
     std::string value_ = "null";
@@ -69,9 +50,6 @@ public:
 
     void set_line(int line) { line_ = line; }
     int get_line() { return line_; }
-
-    // Test
-    virtual void Print() {}
 
 	virtual int eval(Environment<int>& env) { return 0; }
 };
@@ -92,14 +70,6 @@ public:
         }
     }
 
-    // Test
-    virtual void Print() {
-        std::cout<<"ASTBlock: \t\t"<<"{"<<statements_.size()<<"}"<<std::endl;
-        for (int i = 0; i != statements_.size(); ++i) {
-            statements_[i]->Print();
-        }
-    }
-
 	virtual int eval(Environment<int>& env);
 };
 
@@ -111,10 +81,6 @@ public:
     }
     ~ASTConstInt() {}
     
-    // Test
-    virtual void Print() {
-        std::cout<<"ASTConstInt: \t\t"<<get_value()<<std::endl;
-    }
 	virtual int eval(Environment<int>& env);
 };
 
@@ -126,10 +92,6 @@ public:
     }
     ~ASTConstString() {}
     
-    // Test
-    virtual void Print() {
-        std::cout<<"ASTConstString: \t"<<get_value()<<std::endl;
-    }
 	virtual int eval(Environment<int>& env);
 };
 
@@ -141,10 +103,6 @@ public:
     }
     ~ASTVariable() {}
 
-    // Test
-    virtual void Print() {
-        std::cout<<"ASTVariable: \t\t"<<get_value()<<std::endl;
-    }
 	virtual int eval(Environment<int>& env);
 };
 
@@ -164,13 +122,6 @@ public:
         }
     }
     
-    // Test
-    virtual void Print() {
-        std::cout<<"ASTStatDeclare: \t"<<"int: "<<var_list_.size()<<std::endl;
-        for (int i = 0; i != var_list_.size(); ++i) {
-            var_list_[i]->Print();
-        }
-    }
 	virtual int eval(Environment<int>& env);
 };
 
@@ -193,12 +144,6 @@ public:
 		return var_->get_value();
 	}
 
-    // Test
-    virtual void Print() {
-        std::cout<<"ASTStatAssign: \t\t"<<"="<<std::endl;
-        var_->Print();
-        expr_->Print();
-    }
 	virtual int eval(Environment<int>& env);
 };
 
@@ -224,16 +169,6 @@ public:
         }
     }
 
-    // Test
-    virtual void Print() {
-        std::cout<<"ASTStatIf: \t\t"<<"if"<<std::endl;
-        condition_->Print();
-        if_block_->Print();
-        std::cout<<"ASTStatIf: \t\t"<<"else"<<std::endl;
-        if (else_block_) {
-            else_block_->Print();
-        }
-    }  
 	virtual int eval(Environment<int>& env);
 };
 
@@ -252,12 +187,6 @@ public:
         delete block_;
     }
     
-    // Test
-    virtual void Print() {
-        std::cout<<"ASTStatWhile: \t\t"<<"while"<<std::endl;
-        condition_->Print();
-        block_->Print();
-    }  
 	virtual int eval(Environment<int>& env);
 };
 
@@ -275,13 +204,7 @@ public:
         delete block_;
         delete condition_;
     }
-    
-    // Test
-    virtual void Print() {
-        std::cout<<"ASTStatDo: \t\t"<<"dowhile"<<std::endl;
-        block_->Print();
-        condition_->Print();
-    }  
+
 	virtual int eval(Environment<int>& env);
 };
 
@@ -318,23 +241,6 @@ public:
         delete block_;
     }
     
-    // Test
-    virtual void Print() {
-        std::cout<<"ASTStatFor: \t\t"<<"for"<<std::endl;
-        if (init_) {
-            std::cout<<"ASTStatFor: \t\t"<<"init"<<std::endl;
-            init_->Print();
-        }
-        if (condition_) {
-            std::cout<<"ASTStatFor: \t\t"<<"condition"<<std::endl;
-            condition_->Print();
-        }
-        if (increase_) {
-            std::cout<<"ASTStatFor: \t\t"<<"increase"<<std::endl;
-            increase_->Print();
-        }
-        block_->Print();
-    }  
 	virtual int eval(Environment<int>& env);
 };
 
@@ -344,11 +250,7 @@ public:
         set_line(line);
     }
     ~ASTStatBreak() {}
-    
-    // Test
-    virtual void Print() {
-        std::cout<<"ASTStatBreak: \t"<<"break"<<std::endl;
-    }
+
 	virtual int eval(Environment<int>& env);
 };
 
@@ -365,25 +267,6 @@ public:
         delete var_;
     }
     
-    // Test
-    virtual void Print() {
-        std::string str;
-        switch (op_) {
-            case Token::OP_INCREASE: {
-                str = "++";
-                break;
-            }
-            case Token::OP_DECREASE: {
-                str = "--";
-                break;
-            }
-            default: {
-                str = (char)op_;
-            }
-        }
-        std::cout<<"ASTExprSingle: \t\t"<<str<<std::endl;
-        var_->Print();
-    }  
 	virtual int eval(Environment<int>& env);
 };
 
@@ -402,12 +285,6 @@ public:
         delete exprb_;
     }
     
-    // Test
-    virtual void Print() {
-        std::cout<<"ASTExprComma: \t\t"<<","<<std::endl;
-        expra_->Print();
-        exprb_->Print();
-    }  
 	virtual int eval(Environment<int>& env);
 };
 
@@ -430,14 +307,6 @@ public:
         }
     }
 
-    // Test
-    virtual void Print() {
-        std::cout<<"ASTExprCallFunc: \t"<<"("<<parameters_.size()<<")"<<std::endl;
-        var_->Print();
-        for (int i = 0; i != parameters_.size(); ++i) {
-            parameters_[i]->Print();
-        }
-    }
 	virtual int eval(Environment<int>& env);
 };
 
@@ -457,33 +326,5 @@ public:
         delete r_node_;
     }
 
-    // Test
-    virtual void Print() {
-        std::string str;
-        switch (op_) {
-            case Token::OP_GTE: {
-                str = ">=";
-                break;
-            }
-            case Token::OP_LTE: {
-                str = "<=";
-                break;
-            }
-            case Token::OP_EQU: {
-                str = "==";
-                break;
-            }
-            case Token::OP_NE: {
-                str = "!=";
-                break;
-            }
-            default: {
-                str = (char)op_;
-            }
-        }
-        std::cout<<"ASTExpression: \t\t"<<str<<std::endl;
-        l_node_->Print();
-        r_node_->Print();
-    }
 	virtual int eval(Environment<int>& env);
 };

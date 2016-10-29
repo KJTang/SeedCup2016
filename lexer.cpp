@@ -14,13 +14,6 @@ void Lexer::Input(const std::string& raw_str) {
 
 void Lexer::Output(std::vector<TokenStruct*>& tokens) {
     tokens = tokens_;
-
-    // Test
-    std::cout<<"======================== Lex Start ======================"<<std::endl;
-    for (int i = 0; i != tokens_.size(); ++i) {
-        std::cout<<(int)tokens_[i]->type<<"\t"<<tokens_[i]->value<<"\t"<<tokens_[i]->line<<std::endl;
-    }
-    std::cout<<"======================== Lex End ========================"<<std::endl;
 }
 
 bool Lexer::Lex() {

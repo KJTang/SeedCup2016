@@ -1,0 +1,21 @@
+int a;
+int b = 3;
+a = b;
+int c = b - 1;
+
+if (a==b)
+	printf("equal! %d", a++);
+if (a>=b)
+	a--;
+if (c<=b){
+	int a = 7;
+	if (a != b)
+		printf("nested scope");
+}
+if (c<a){
+	int a = 0;
+	if (c>a)
+	{a++;}
+}
+
+//Test for (1)all of compare-symbols (2)self-increase in function call (3)nested scope

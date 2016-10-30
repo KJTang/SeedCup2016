@@ -70,12 +70,12 @@ TEST(CC, t8) {
 	);
 }
 
-//TEST(CC, t9) {
-//	EXPECT_STREQ(
-//		cctest("input9.txt").c_str(),
-//		"2 3 4 6 7 8 9 10 11 12 13 15 16 17 18"
-//	);
-//}
+TEST(CC, t9) {
+	EXPECT_STREQ(
+		cctest("input9.txt").c_str(),
+		"2 3 4 6 7 8 9 10 11 12 13 15 16 17 18"
+	);
+}
 
 TEST(CC, t10) {
 	EXPECT_STREQ(

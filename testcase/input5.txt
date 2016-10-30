@@ -1,0 +1,12 @@
+int a;
+int b = 3;
+a = 2;
+if (a <= b) {
+	do {
+		b--;
+	} while (b);
+}
+else {
+	a++;
+}
+//Test for (1)do-while-loop

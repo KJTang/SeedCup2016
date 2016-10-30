@@ -1,0 +1,15 @@
+int a;
+int b = 3;
+a = 2;
+for (;;) {
+	for (;;) {
+		a--;
+		if (a <= 0)
+			break;
+	}
+	b--;
+	if (b <= 0)
+		break;
+}
+
+//Test for (1)nested loop (2)null-for-header (3)break

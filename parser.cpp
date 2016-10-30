@@ -138,13 +138,29 @@ ASTNode* Parser::ParseStatAssign(ASTNode* var) {
 ASTNode* Parser::ParseStatIf() {
     int line = cur_token_->line;
     cur_token_ = tokens_[pos_++];               // eat "if"
-    ASTNode* condition = ParseExpression();
+
+    std::stack<ASTNode*> condition_stack;
+    do {
+        cur_token_ = tokens_[pos_++];       // eat '(' or ','
+        condition_stack.push(ParseStatement());
+    } while (cur_token_->type != static_cast<Token>(')'));
+    while (condition_stack.size() >= 2) {
+        ASTNode* r_node = condition_stack.top();
+        condition_stack.pop();
+        ASTNode* l_node = condition_stack.top();
+        condition_stack.pop();
+        condition_stack.push(ParseExprComma(l_node, r_node));
+    }
+    ASTNode* condition = condition_stack.top();
+    cur_token_ = tokens_[pos_++];           // eat ')'
+
     ASTNode* if_block = nullptr;
     if (cur_token_->type == static_cast<Token>('{')) {
         if_block = ParseBlock();
     } else {
         if_block = ParseStatement();
     }
+    cur_token_ = tokens_[pos_++];           // eat ';'
     ASTNode* else_block = nullptr;
     if (cur_token_->type == Token::KEYWORD_ELSE) {
         cur_token_ = tokens_[pos_++];           // eat "else"
@@ -324,6 +340,18 @@ ASTNode* Parser::ParseExpression() {
             }
             case static_cast<Token>('('): {
                 var_stack.push(ParseExprParen());
+                is_last_token_var = true;
+                break;
+            }
+            case static_cast<Token>('!'): {
+                cur_token_ = tokens_[pos_++];
+                ASTNode* var = nullptr;
+                if (cur_token_->type == Token::CONST_INT) {
+                    var = ParseConstInt();
+                } else {
+                    var = ParseVariable();
+                }
+                var_stack.push(ParseExprSingle(var, static_cast<Token>('!')));
                 is_last_token_var = true;
                 break;
             }

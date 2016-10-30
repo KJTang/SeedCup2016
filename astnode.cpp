@@ -60,6 +60,7 @@ int ASTStatIf::eval(Environment<int>& env) {
 int ASTStatWhile::eval(Environment<int>& env) {
 	Evaluator::push_line(get_line());
 	while (condition_->eval(env)) {
+		Evaluator::push_line(get_line());
 		block_->eval(env);
 		if (Evaluator::FLAG_BREAK) {
 			Evaluator::reset_break();
@@ -87,6 +88,7 @@ int ASTStatFor::eval(Environment<int>& env) {
 		init_->eval(env);
 	}
 	while (condition_ ? condition_->eval(env) : true) {
+		Evaluator::push_line(get_line());
 		block_->eval(env);
 		if (Evaluator::FLAG_BREAK) {//continue or sequence
 			Evaluator::reset_break();
@@ -110,8 +112,15 @@ int ASTStatBreak::eval(Environment<int>& env) {
 
 int ASTExprSingle::eval(Environment<int>& env) {
 	Evaluator::push_line(get_line());
-	assert(env.is_var_exist(var_->get_value()));
-	int temp = env.lookup_var(var_->get_value());
+	char first = var_->get_value().at(0);
+	int temp;
+	if (first <= '9' && first >= '0') {
+		temp = stoi(var_->get_value());
+	}
+	else {
+		assert(env.is_var_exist(var_->get_value()));
+		temp = env.lookup_var(var_->get_value());
+	}
 	switch (op_)
 	{
 	case Token::OP_INCREASE: {
@@ -124,8 +133,10 @@ int ASTExprSingle::eval(Environment<int>& env) {
 	}
 	case static_cast<Token>('-'): {
 		temp = -temp;
-		env.update_var(var_->get_value(), temp);
 		break;
+	}
+	case static_cast<Token>('!') : {
+		temp = !temp;
 	}
 	default:
 		break;

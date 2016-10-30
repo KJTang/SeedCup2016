@@ -63,6 +63,8 @@ ASTNode* Parser::ParseStatement() {
             }
         }
         case static_cast<Token>('('): 
+        case static_cast<Token>('!'): 
+        case static_cast<Token>('-'): 
         case Token::CONST_INT: 
         case Token::CONST_STRING: { 
             return ParseExpression();
@@ -208,6 +210,7 @@ ASTNode* Parser::ParseStatDo() {
         block = ParseBlock();
     } else {
         block = ParseStatement();
+		cur_token_ = tokens_[pos_++];           // eat ";"
     }
     cur_token_ = tokens_[pos_++];           // eat "while"
     std::stack<ASTNode*> condition_stack;
@@ -345,12 +348,7 @@ ASTNode* Parser::ParseExpression() {
             }
             case static_cast<Token>('!'): {
                 cur_token_ = tokens_[pos_++];
-                ASTNode* var = nullptr;
-                if (cur_token_->type == Token::CONST_INT) {
-                    var = ParseConstInt();
-                } else {
-                    var = ParseVariable();
-                }
+                ASTNode* var = ParseVariable();
                 var_stack.push(ParseExprSingle(var, static_cast<Token>('!')));
                 is_last_token_var = true;
                 break;

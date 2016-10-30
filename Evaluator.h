@@ -23,6 +23,9 @@ public:
 	static void push_line(int l);
 	static vector<int> lines;
 
+	static bool FLAG_BREAK;
+	static void reset_break() { FLAG_BREAK = false; }
+
 private:
 	Environment<int> env_;
 	vector<ASTNode*> asts_;

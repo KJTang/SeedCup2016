@@ -21,6 +21,7 @@ std::string Evaluator::output() {
 		ss << i << " ";
 	}
 	std::string str = ss.str().substr(0, ss.str().length() - 1);
+	lines.clear();
 	return str;
 }
 

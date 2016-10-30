@@ -1,16 +1,17 @@
 #include "astnode.h"
 
+bool Evaluator::FLAG_BREAK;
+
 int ASTBlock::eval(Environment<int>& env) {
-	int flag = 1;
 	env.getin_new_scope();
 	for (auto stat : statements_) {
-		if (!stat->eval(env)) {
-			flag = 0;
+		stat->eval(env);
+		if (Evaluator::FLAG_BREAK) {
 			break;
 		}
 	}
 	env.getout_a_scope();
-	return flag;
+	return 1;
 }
 
 int ASTConstInt::eval(Environment<int>& env) {
@@ -59,7 +60,9 @@ int ASTStatIf::eval(Environment<int>& env) {
 int ASTStatWhile::eval(Environment<int>& env) {
 	Evaluator::push_line(get_line());
 	while (condition_->eval(env)) {
-		if (!block_->eval(env)) {
+		block_->eval(env);
+		if (Evaluator::FLAG_BREAK) {
+			Evaluator::reset_break();
 			break;
 		}
 	}
@@ -67,12 +70,13 @@ int ASTStatWhile::eval(Environment<int>& env) {
 }
 
 int ASTStatDo::eval(Environment<int>& env) {
-	Evaluator::push_line(get_line());
 	do {
-		if (!block_->eval(env)) {
+		block_->eval(env);
+		if (Evaluator::FLAG_BREAK) {
+			Evaluator::reset_break();
 			break;
 		}
-	} while (condition_->eval(env));
+	} while (Evaluator::push_line(condition_->get_line()), condition_->eval(env));
 	return 1;
 }
 
@@ -83,13 +87,15 @@ int ASTStatFor::eval(Environment<int>& env) {
 		init_->eval(env);
 	}
 	while (condition_ ? condition_->eval(env) : true) {
-		if (block_->eval(env)) {//continue or sequence
+		block_->eval(env);
+		if (Evaluator::FLAG_BREAK) {//continue or sequence
+			Evaluator::reset_break();
+			break;
+		}
+		else {
 			if (increase_) {
 				increase_->eval(env);
 			}
-		}
-		else {
-			break;
 		}
 	}
 	env.getout_a_scope();
@@ -98,6 +104,7 @@ int ASTStatFor::eval(Environment<int>& env) {
 
 int ASTStatBreak::eval(Environment<int>& env) {
 	Evaluator::push_line(get_line());
+	Evaluator::FLAG_BREAK = true;
 	return 0;
 }
 
@@ -108,13 +115,11 @@ int ASTExprSingle::eval(Environment<int>& env) {
 	switch (op_)
 	{
 	case Token::OP_INCREASE: {
-		temp += 1;
-		env.update_var(var_->get_value(), temp);
+		env.update_var(var_->get_value(), temp + 1);
 		break;
 	}
 	case Token::OP_DECREASE: {
-		temp -= 1;
-		env.update_var(var_->get_value(), temp);
+		env.update_var(var_->get_value(), temp - 1);
 		break;
 	}
 	case static_cast<Token>('-'): {

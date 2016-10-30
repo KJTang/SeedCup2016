@@ -7,7 +7,7 @@
 #include "parser.h"
 #include "Evaluator.h"
 
-int main(int argc, char *args[]) {
+int main_t(int argc, char *args[]) {
     Lexer lexer;
     Parser parser;
 

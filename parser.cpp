@@ -159,8 +159,8 @@ ASTNode* Parser::ParseStatIf() {
         if_block = ParseBlock();
     } else {
         if_block = ParseStatement();
+        cur_token_ = tokens_[pos_++];           // eat ';'
     }
-    cur_token_ = tokens_[pos_++];           // eat ';'
     ASTNode* else_block = nullptr;
     if (cur_token_->type == Token::KEYWORD_ELSE) {
         cur_token_ = tokens_[pos_++];           // eat "else"

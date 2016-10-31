@@ -372,6 +372,7 @@ ASTNode* Parser::ParseExpression() {
                 is_last_token_var = true;
                 break;
             }
+            case static_cast<Token>('+'): 
             case static_cast<Token>('-'): {
                 if (!is_last_token_var) {
                     Token op = cur_token_->type;
@@ -387,7 +388,6 @@ ASTNode* Parser::ParseExpression() {
                     break;
                 }
             }
-            case static_cast<Token>('+'): 
             case static_cast<Token>('*'): 
             case static_cast<Token>('/'): 
             case static_cast<Token>('>'): 
@@ -396,7 +396,7 @@ ASTNode* Parser::ParseExpression() {
             case Token::OP_LTE: 
             case Token::OP_EQU: 
             case Token::OP_NE: {
-                if (!op_stack.empty() && 
+                while (!op_stack.empty() && 
                     binary_operator_precedence[op_stack.top()] >= binary_operator_precedence[cur_token_->type]) {
                     Token op = op_stack.top();
                     op_stack.pop();

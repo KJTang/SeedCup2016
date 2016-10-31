@@ -331,6 +331,37 @@ ASTNode* Parser::ParseExpression() {
                 is_last_token_var = true;
                 break;
             }
+            case static_cast<Token>(','): {
+                ASTNode* expr = nullptr;
+                // empty expression
+                if (op_stack.empty()) {
+                    if (var_stack.empty()) {
+                        expr = nullptr;
+                    } else {
+                        while (var_stack.size() != 1) {
+                            delete var_stack.top();
+                            var_stack.pop();
+                        }
+                        expr = var_stack.top();
+                    }
+                }
+                // not empty expression
+                while (!op_stack.empty()) {
+                    Token op = op_stack.top();
+                    op_stack.pop();
+                    ASTNode* r_node = var_stack.top();
+                    var_stack.pop();
+                    ASTNode* l_node = var_stack.top();
+                    var_stack.pop();
+                    ASTNode* node = new ASTExpression(line, op, l_node, r_node);
+                    var_stack.push(node);
+                }
+                if (!var_stack.empty()) {
+                    expr = var_stack.top();
+                }
+                cur_token_ = tokens_[pos_++];       // eat ','
+                return ParseExprComma(expr, ParseStatement());
+            }
             case Token::OP_INCREASE: 
             case Token::OP_DECREASE: {
                 Token op = cur_token_->type;

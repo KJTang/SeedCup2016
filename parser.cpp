@@ -243,7 +243,6 @@ ASTNode* Parser::ParseStatDo() {
 }
 
 ASTNode* Parser::ParseStatFor() {
-    special_comma_flag = true;
     int line = cur_token_->line;
     cur_token_ = tokens_[pos_++];           // eat "for"
 
@@ -254,7 +253,9 @@ ASTNode* Parser::ParseStatFor() {
     if (tokens_[pos_]->type != static_cast<Token>(';')) {
         do {
             cur_token_ = tokens_[pos_++];       // eat '(' or ','
+            special_comma_flag = true;
             init_stack.push(ParseStatement());
+            special_comma_flag = false;
         } while (cur_token_->type != static_cast<Token>(';'));
         while (init_stack.size() >= 2) {
             ASTNode* r_node = init_stack.top();
@@ -271,7 +272,9 @@ ASTNode* Parser::ParseStatFor() {
     if (tokens_[pos_]->type != static_cast<Token>(';')) {
         do {
             cur_token_ = tokens_[pos_++];       // eat ';' or ','
+            special_comma_flag = true;
             condition_stack.push(ParseStatement());
+            special_comma_flag = false;
         } while (cur_token_->type != static_cast<Token>(';'));
         while (condition_stack.size() >= 2) {
             ASTNode* r_node = condition_stack.top();
@@ -288,7 +291,9 @@ ASTNode* Parser::ParseStatFor() {
     if (tokens_[pos_]->type != static_cast<Token>(')')) {
         do {
             cur_token_ = tokens_[pos_++];       // eat ';' or ','
+            special_comma_flag = true;
             increase_stack.push(ParseStatement());
+            special_comma_flag = false;
         } while (cur_token_->type != static_cast<Token>(')'));
         while (increase_stack.size() >= 2) {
             ASTNode* r_node = increase_stack.top();

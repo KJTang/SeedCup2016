@@ -1,0 +1,32 @@
+int a = 0;
+int b = 1;
+int c = 2;
+if (a == 0) {
+  if (b == 0) {
+    if (c == 2){
+      c++;
+    }
+    else
+      c--;
+  }
+  else {
+    if (c == 2)
+      c++;
+    else
+      c--;
+  }
+}
+else {
+  a++;
+}
+
+if (a== -1){
+  a++;
+}
+else if (a== 0){
+  a++;
+}
+
+
+//Test for (1)nested-if (2)else if
+//1 2 3 4 5 13 14 23 26 27

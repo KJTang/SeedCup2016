@@ -1,0 +1,15 @@
+int a = 123;
+int b = 0;
+if (!a) {
+  printf("a");
+}
+else
+  printf("!a");
+if (!b)
+  printf("b");
+else {
+  printf("!b");
+}
+
+//Extra: Test for (1)not-symbol
+//1 2 3 7 8 9

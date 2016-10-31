@@ -1,0 +1,13 @@
+for (int a = 4, b = 3, c = 5, d = 2; a + b >= c + d; a = a - b, b++, c--) {
+  if (c, a - b)
+    a + b;
+  while (a, b, c, 0) {
+    b--;
+  }
+  do {
+    a++;
+  } while (b, c, 0);
+}
+
+for (int a = 4, b = 0; a >= b; )
+  a--/*, b++*/;

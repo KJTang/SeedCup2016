@@ -1,0 +1,8 @@
+int a = 2;
+int b = 9;
+int c = -1;
+
+while (a + b / 2 > 0) {
+  a = c * a + b / 2;
+  b = b / 2;
+}

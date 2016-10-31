@@ -105,6 +105,27 @@ TEST(CC, t11) {
 	);
 }
 
+TEST(CC, t12) {
+	EXPECT_STREQ(
+		cctest("input12.txt").c_str(),
+		"1 2 4 5 6 5 6 5 8 9"
+	);
+}
+
+TEST(CC, t13) {
+	EXPECT_STREQ(
+		cctest("input13.txt").c_str(),
+		"1 2 3 4 8 9 1 2 3 4 8 9 1 12 13 12 13 12 13 12 13 12 13 12"
+	);
+}
+
+TEST(CC, t14) {
+	EXPECT_STREQ(
+		cctest("input14.txt").c_str(),
+		"1 2 3 5 6 7 5 6 7 5 6 7 5 6 7 5"
+	);
+}
+
 TEST(CC, tX1) {
 	EXPECT_STREQ(
 		cctest("inputX1.txt").c_str(),

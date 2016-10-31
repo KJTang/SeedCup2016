@@ -3,6 +3,9 @@
 #include <iostream>
 #include <stack>
 
+// TODO: hotfix in emergency
+static bool special_comma_flag = false;
+
 Parser::Parser() {}
 
 Parser::~Parser() {
@@ -117,6 +120,7 @@ ASTNode* Parser::ParseVariable() {
 }
 
 ASTNode* Parser::ParseStatDeclare() {
+    special_comma_flag = true;
     int line = cur_token_->line;
     std::vector<ASTNode*> var_list;
     do {
@@ -127,6 +131,7 @@ ASTNode* Parser::ParseStatDeclare() {
         }
         var_list.push_back(var);
     } while (cur_token_->type == static_cast<Token>(','));
+    special_comma_flag = false;
     return new ASTStatDeclare(line, var_list);
 }
 
@@ -138,6 +143,7 @@ ASTNode* Parser::ParseStatAssign(ASTNode* var) {
 }
 
 ASTNode* Parser::ParseStatIf() {
+    special_comma_flag = true;
     int line = cur_token_->line;
     cur_token_ = tokens_[pos_++];               // eat "if"
 
@@ -172,10 +178,12 @@ ASTNode* Parser::ParseStatIf() {
             else_block = ParseStatement();
         }
     }
+    special_comma_flag = false;
     return new ASTStatIf(line, condition, if_block, else_block);
 }
 
 ASTNode* Parser::ParseStatWhile() {
+    special_comma_flag = true;
     int line = cur_token_->line;
     cur_token_ = tokens_[pos_++];           // eat "while"
     std::stack<ASTNode*> condition_stack;
@@ -199,10 +207,12 @@ ASTNode* Parser::ParseStatWhile() {
     } else {
         block = ParseStatement();
     }
+    special_comma_flag = false;
     return new ASTStatWhile(line, condition, block);
 }
 
 ASTNode* Parser::ParseStatDo() {
+    special_comma_flag = true;
     int line = cur_token_->line;
     cur_token_ = tokens_[pos_++];           // eat "do"
     ASTNode* block = nullptr;
@@ -227,10 +237,12 @@ ASTNode* Parser::ParseStatDo() {
     }
     ASTNode* condition = condition_stack.top();
     cur_token_ = tokens_[pos_++];           // eat ')'
+    special_comma_flag = false;
     return new ASTStatDo(line, block, condition);
 }
 
 ASTNode* Parser::ParseStatFor() {
+    special_comma_flag = true;
     int line = cur_token_->line;
     cur_token_ = tokens_[pos_++];           // eat "for"
 
@@ -297,6 +309,7 @@ ASTNode* Parser::ParseStatFor() {
         block = ParseStatement();
     }
 
+    special_comma_flag = false;
     return new ASTStatFor(line, init, condition, increase, block);
 }
 
@@ -330,37 +343,6 @@ ASTNode* Parser::ParseExpression() {
                 var_stack.push(ParseConstString());
                 is_last_token_var = true;
                 break;
-            }
-            case static_cast<Token>(','): {
-                ASTNode* expr = nullptr;
-                // empty expression
-                if (op_stack.empty()) {
-                    if (var_stack.empty()) {
-                        expr = nullptr;
-                    } else {
-                        while (var_stack.size() != 1) {
-                            delete var_stack.top();
-                            var_stack.pop();
-                        }
-                        expr = var_stack.top();
-                    }
-                }
-                // not empty expression
-                while (!op_stack.empty()) {
-                    Token op = op_stack.top();
-                    op_stack.pop();
-                    ASTNode* r_node = var_stack.top();
-                    var_stack.pop();
-                    ASTNode* l_node = var_stack.top();
-                    var_stack.pop();
-                    ASTNode* node = new ASTExpression(line, op, l_node, r_node);
-                    var_stack.push(node);
-                }
-                if (!var_stack.empty()) {
-                    expr = var_stack.top();
-                }
-                cur_token_ = tokens_[pos_++];       // eat ','
-                return ParseExprComma(expr, ParseStatement());
             }
             case Token::OP_INCREASE: 
             case Token::OP_DECREASE: {
@@ -422,6 +404,11 @@ ASTNode* Parser::ParseExpression() {
                 cur_token_ = tokens_[pos_++];
                 is_last_token_var = false;
                 break;
+            }
+            case static_cast<Token>(','): {
+                if (!special_comma_flag) {
+                    cur_token_ = tokens_[pos_++];   // eat ','
+                }
             }
             default: {
                 // ')', ';', ...

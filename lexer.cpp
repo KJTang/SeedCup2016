@@ -249,6 +249,7 @@ Token Lexer::LexString() {
         if (cur_char_ == '\"' && const_str[const_str.size()-1] != '\\') {
             finished = true;
         }
-    }ns_.push_back(new TokenStruct(Token::CONST_STRING, const_str, line_));
+    }
+    tokens_.push_back(new TokenStruct(Token::CONST_STRING, const_str, line_));
     return Token::CONST_STRING;
 }

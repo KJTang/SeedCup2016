@@ -140,6 +140,10 @@ ASTNode* Parser::ParseStatAssign(ASTNode* var) {
     int line = cur_token_->line;
     cur_token_ = tokens_[pos_++];               // eat '='
     ASTNode* expr = ParseExpression();
+    // sequence assignment
+    if (cur_token_->type == static_cast<Token>('=')) {
+        expr = ParseStatAssign(expr);
+    }
     return new ASTStatAssign(line, var, expr);
 }
 

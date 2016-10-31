@@ -374,6 +374,7 @@ ASTNode* Parser::ParseExpression() {
             }
             case static_cast<Token>('-'): {
                 if (!is_last_token_var) {
+                    Token op = cur_token_->type;
                     cur_token_ = tokens_[pos_++];
                     ASTNode* var = nullptr;
                     if (cur_token_->type == Token::CONST_INT) {
@@ -381,7 +382,7 @@ ASTNode* Parser::ParseExpression() {
                     } else {
                         var = ParseVariable();
                     }
-                    var_stack.push(ParseExprSingle(var, static_cast<Token>('-')));
+                    var_stack.push(ParseExprSingle(var, op));
                     is_last_token_var = true;
                     break;
                 }

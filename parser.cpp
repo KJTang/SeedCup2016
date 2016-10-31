@@ -103,9 +103,10 @@ ASTNode* Parser::ParseConstInt() {
 }
 
 ASTNode* Parser::ParseConstString() {
+    std::string str = cur_token_->value;
     int line = cur_token_->line;
     cur_token_ = tokens_[pos_++];
-    return new ASTConstString(line, cur_token_->value);
+    return new ASTConstString(line, str);
 }
 
 ASTNode* Parser::ParseVariable() {
@@ -470,6 +471,7 @@ ASTNode* Parser::ParseExprComma(ASTNode* l, ASTNode* r) {
 }
 
 ASTNode* Parser::ParseExprCallfunc(ASTNode* var) {
+    special_comma_flag = true;
     int line = cur_token_->line;
     std::vector<ASTNode*> parameters;
     do {
@@ -482,5 +484,6 @@ ASTNode* Parser::ParseExprCallfunc(ASTNode* var) {
     } else {
         cur_token_ = tokens_[pos_++];
     }
+    special_comma_flag = false;
     return new ASTExprCallFunc(line, var, parameters);
 }

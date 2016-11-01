@@ -39,14 +39,15 @@ int ASTStatDeclare::eval(Environment<int>& env) {
 
 int ASTStatAssign::eval(Environment<int>& env) {
 	Evaluator::push_line(get_line());
-	env.update_var(var_->get_value(), expr_->eval(env));
-	return 1;
+	int rhs = expr_->eval(env);
+	env.update_var(var_->get_value(), rhs);
+	return rhs;
 }
 
 int ASTStatIf::eval(Environment<int>& env) {
 	Evaluator::push_line(get_line());
 	int flag = 1;
-	if (condition_->eval(env)) {
+	if (condition_->eval(env) && if_block_) {
 		flag = if_block_->eval(env);
 	}
 	else {

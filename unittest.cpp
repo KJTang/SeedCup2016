@@ -66,7 +66,7 @@ TEST(CC, t6_2) {
 TEST(CC, t6_3) {
 	EXPECT_STREQ(
 		cctest("input6-3.txt").c_str(),
-		"1 3 6 3 6 3 4"
+		"1 3 6 7 3 6 7 3 4"
 	);
 }
 
@@ -122,7 +122,14 @@ TEST(CC, t13) {
 TEST(CC, t14) {
 	EXPECT_STREQ(
 		cctest("input14.txt").c_str(),
-		"1 2 3 5 6 7 5 6 7 5 6 7 5 6 7 5"
+		"1 2 3 5 6 7 5 6 7 5 6 7 5 6 7 5 10 11 12 10 15 16 15 19 20 19 20 19 20 19"
+	);
+}
+
+TEST(CC, t15) {
+	EXPECT_STREQ(
+		cctest("input15.txt").c_str(),
+		"1 2 4 5 8 9"
 	);
 }
 
@@ -130,6 +137,48 @@ TEST(CC, tX1) {
 	EXPECT_STREQ(
 		cctest("inputX1.txt").c_str(),
 		"1 2 3 7 8 9"
+	);
+}
+
+TEST(DY, control1) {
+	EXPECT_STREQ(
+		cctest("input/control_1.txt").c_str(),
+		"1 3 6"
+	);
+}
+
+TEST(DY, control2) {
+	EXPECT_STREQ(
+		cctest("input/control_2.txt").c_str(),
+		"2 4 5 6 7"
+	);
+}
+
+TEST(DY, control4) {
+	EXPECT_STREQ(
+		cctest("input/control_4.txt").c_str(),
+		"1 3 4 5"
+	);
+}
+
+//TEST(DY, test0) {
+//	EXPECT_STREQ(
+//		cctest("input/dy-debug.c").c_str(),
+//		"1 5 6 7 8 10 12 13 14 15 16 17 18 20 28 29 30 38 39 40 44"
+//	);
+//}
+
+//TEST(DY, test3) {
+//	EXPECT_STREQ(
+//		cctest("input/dy-test-3.c").c_str(),
+//		"2 3 4 6 9 10 11 12 13 14 15 16 17 18 20 21 22 23 24 25 26 27 28 30 31 33 35 41"
+//	);
+//}
+
+TEST(DY, test4) {
+	EXPECT_STREQ(
+		cctest("input/dy-test-4.c").c_str(),
+		"1 4 5 7 8 11 13 15 16 19 22 24 25 31 32"
 	);
 }
 

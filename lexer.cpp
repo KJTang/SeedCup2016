@@ -139,6 +139,7 @@ Token Lexer::LexToken() {
                 }
             // "/*" comment
             } else if (raw_str_[pos_] == '*') {
+                cur_char_ = raw_str_[pos_++];           // eat '*'
                 do {
                     cur_char_ = raw_str_[pos_++];
                     if (cur_char_ == '\n') {

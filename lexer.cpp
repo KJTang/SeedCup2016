@@ -239,21 +239,25 @@ Token Lexer::LexString() {
     std::string const_str;
 
     cur_char_ = raw_str_[pos_++];
-    bool finished = false;
-    while (!finished) {
-        if (pos_ >= raw_str_.size()) {
-            // ERR(line_, "Missing \"");
-            return Token::END_OF_FILE;
-        }
-        const_str += cur_char_;
-        cur_char_ = raw_str_[pos_++];
-        if (cur_char_ == '\\') {
+    if (cur_char_ == '\"') {
+        // blank str
+    } else {
+        bool finished = false;
+        while (!finished) {
+            if (pos_ >= raw_str_.size()) {
+                // ERR(line_, "Missing \"");
+                return Token::END_OF_FILE;
+            }
             const_str += cur_char_;
             cur_char_ = raw_str_[pos_++];
-            continue;
-        }
-        if (cur_char_ == '\"') {
-            finished = true;
+            if (cur_char_ == '\\') {
+                const_str += cur_char_;
+                cur_char_ = raw_str_[pos_++];
+                continue;
+            }
+            if (cur_char_ == '\"') {
+                finished = true;
+            }
         }
     }
     tokens_.push_back(new TokenStruct(Token::CONST_STRING, const_str, line_));

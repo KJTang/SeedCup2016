@@ -6,3 +6,19 @@ while (a + b / 2 > 0) {
   a = c * a + b / 2;
   b = b / 2;
 }
+
+while (a + b + c * a <= 0) {
+  a = a / 2;
+  b++;
+}
+
+while (a*b*c >= 0) {
+  a++;
+}
+
+while (a / b - c >= 0) {
+  a--;
+}
+
+//Test for (1)complicated expression
+//1 2 3 5 6 7 5 6 7 5 6 7 5 6 7 5 10 11 12 10 15 16 15 19 20 19 20 19 20 19

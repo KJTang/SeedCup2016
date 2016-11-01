@@ -2,11 +2,12 @@ int a;
 int b = 3;
 a = 2;
 if (a <= b) {
-	do {
+	do
 		b--;
-	} while (b);
+	 while (b);
 }
 else {
 	a++;
 }
-//Test for (1)do-while-loop
+//Test for (1)do-while-loop (2)dowhile without braces
+//2 3 4 6 7 6 7 6 7

@@ -1,0 +1,10 @@
+int a = 2, b = 3;
+do {
+  if (a-- <= 0) {
+    break;
+  }
+  b++;
+}while(1);
+
+//Test for (1)noexpr-dowhile
+//1 3 6 7 3 6 7 3 4

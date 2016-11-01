@@ -5,6 +5,7 @@ int apple_pen;
 pen = 1;//哈哈哈哈
 apple = 2;
 apple_pen = apple + pen;/*pp
+aaaaa
 ap*/
 int pineapple = 4;
 int pineapple_pen = pineapple + pen;
@@ -14,4 +15,14 @@ printf("I have an apple. %d\n", apple);
 /* PPAP */
 printf("Pen-pineapple-apple pen.\n");
 
+int banana; //苹果
+
+int a; /*苹果*/ int b;
+
+int c; /*苹
+       果*/ int d;
+
+/*苹果*/ banana = 1 + 1; /*苹果*/ b = banana++; /*苹果*
+
 //Test for (1)comment
+//5 6 7 10 11 13 14 16 25

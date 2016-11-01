@@ -11,7 +11,7 @@ int main(int argc, char *args[]) {
     Lexer lexer;
     Parser parser;
 
-	std::ifstream fin(args[1]);
+	std::ifstream fin("input.txt");
     // compiler input & lexer input
     std::string input_str((std::istreambuf_iterator<char>(fin)), std::istreambuf_iterator<char>());
     // lexer output & parser input

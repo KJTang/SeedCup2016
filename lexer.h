@@ -1,3 +1,9 @@
+/**
+ *  Lexer:
+ *      used to convert input file to tokens. 
+ *      for example, "int a = 0;" will be convert to: "int", "a", "=", "0"
+ */
+
 #pragma once
 
 #include <iostream>
@@ -8,7 +14,7 @@ enum class Token : int {
     IDENTIFIER = 256, 
 
     CONST_INT,          // const int: 123
-    CONST_DOUBLE,          // const double: 12.3
+    CONST_DOUBLE,       // const double: 12.3
     CONST_STRING,       // const string: "str"
 
     OP_GTE,             // >=

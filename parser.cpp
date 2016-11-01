@@ -3,7 +3,8 @@
 #include <iostream>
 #include <stack>
 
-// TODO: hotfix in emergency
+// special_comma_flag: comma(',') can used in 2 case: 1) as operator; 2) as seperator
+// when comma used as seperator, we mark it as special_comma
 static bool special_comma_flag = false;
 
 Parser::Parser() {}

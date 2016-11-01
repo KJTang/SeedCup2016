@@ -1,30 +1,5 @@
 #pragma once
 
-/**
-    EBNF:
-
-    const-int = ...
-    const-string = ...
-    variable = ...
-
-    block = "{", [ statement, { ";", statement } ], "}"
-
-    stat-declare = "int", variable | stat-assign, { ",", variable | stat-assign }
-    stat-assign = variable, "=", const-int | expression
-    stat-if = "if", "(", expression, ")", statement | block, { "else", statement | block }
-    stat-while = "while", "(", expression, ")", statement | block
-    stat-do = "do", statement | block, "while", "(", expression, ")"
-    stat-for = "for", "(", expression, ";", expression, ";", expression, ")", statement | block
-    stat-break = "break"
-
-    expr-single = (variable, "++" | "--") | ("-", variable)
-    expr-comma = expression, ",", expression
-    expr-callfunc = variable, "(", expression, { ",", expression } ")"
-    expression = variable | expr-single | expr-callfunc, { operator, variable | expr-single | expr-callfunc }
-
-    statement = stat-declare | stat-assign | stat-if | stat-while | stat-do | stat-for | stat-break | expression | expr-comma
-*/
-
 #include <string>
 #include <vector>
 #include <cassert>
@@ -33,6 +8,10 @@
 #include "Environment.h"
 #include "Evaluator.h"
 
+/**
+ *  ASTNode:
+ *      base class of astnode
+ */
 class ASTNode {
 private:
     std::string value_ = "null";
@@ -56,6 +35,13 @@ public:
 	virtual int eval(Environment<int>& env) { return 0; }
 };
 
+/**
+ *  ASTBlock:
+ *      like:
+ *          {
+ *              // do sth.  
+ *          }
+ */
 class ASTBlock : public ASTNode {
 private:
     std::vector<ASTNode*> statements_;
@@ -75,6 +61,10 @@ public:
 	virtual int eval(Environment<int>& env);
 };
 
+/**
+ *  ASTConstInt:
+ *      like: 1, 2, 3, ...
+ */
 class ASTConstInt : public ASTNode {
 public:
     ASTConstInt(int line, const std::string& value) {
@@ -88,6 +78,10 @@ public:
 	virtual int eval(Environment<int>& env);
 };
 
+/**
+ *  ASTConstString:
+ *      like: "hello world"
+ */
 class ASTConstString : public ASTNode {
 public:
     ASTConstString(int line, const std::string& value) {
@@ -99,6 +93,10 @@ public:
 	virtual int eval(Environment<int>& env);
 };
 
+/**
+ *  ASTVariable:
+ *      variable name, like: a, b, func
+ */
 class ASTVariable : public ASTNode {
 public:
     ASTVariable(int line, const std::string& var_name) {
@@ -112,6 +110,10 @@ public:
 	virtual int eval(Environment<int>& env);
 };
 
+/**
+ *  ASTStatDeclare:
+ *      variable decalration, like: int a, b;
+ */
 class ASTStatDeclare : public ASTNode {
 private:
     std::vector<ASTNode*> var_list_;
@@ -131,6 +133,10 @@ public:
 	virtual int eval(Environment<int>& env);
 };
 
+/**
+ *  ASTStatAssign:
+ *      like: a = 0; b = c + d;
+ */
 class ASTStatAssign : public ASTNode {
 private:
     ASTNode* var_;
@@ -153,6 +159,15 @@ public:
 	virtual int eval(Environment<int>& env);
 };
 
+/**
+ *  ASTStatIf:
+ *      if-else statement, like:
+ *          if (1) {
+ *              printf("test 1");
+ *          } else {
+ *              printf("test 2");   
+ *          }
+ */
 class ASTStatIf : public ASTNode {
 private:
     ASTNode* condition_;
@@ -182,6 +197,13 @@ public:
 	virtual int eval(Environment<int>& env);
 };
 
+/**
+ *  ASTStatWhile:
+ *      while statement, like: 
+ *          while (1) {
+ *             a++;
+ *          }
+ */
 class ASTStatWhile : public ASTNode {
 private:
     ASTNode* condition_;
@@ -204,6 +226,13 @@ public:
 	virtual int eval(Environment<int>& env);
 };
 
+/**
+ *  ASTStatDo:
+ *      do-while statement, like: 
+ *          do {
+ *              a = a * 2;
+ *          } while (a < 100);
+ */
 class ASTStatDo : public ASTNode {
 private:
     ASTNode* block_;
@@ -226,6 +255,13 @@ public:
 	virtual int eval(Environment<int>& env);
 };
 
+/**
+ *  ASTStatFor:
+ *      for statement, like:
+ *          for (int i = 0; i != 5; i++) {
+ *             printf("%d", i);
+ *          }
+ */
 class ASTStatFor : public ASTNode {
 private:
     ASTNode* init_;
@@ -266,6 +302,13 @@ public:
 	virtual int eval(Environment<int>& env);
 };
 
+/**
+ *  ASTStatBreak:
+ *      break keyword, used in loops, like: 
+ *          while (1) {
+ *             break;
+ *          }
+ */
 class ASTStatBreak : public ASTNode {
 public:
     ASTStatBreak(int line) {
@@ -276,6 +319,12 @@ public:
 	virtual int eval(Environment<int>& env);
 };
 
+/**
+ *  ASTExprSingle:
+ *      single operator(!, -, ++, --), like:
+ *          int a = b++;
+ *          while (!quit) {}
+ */
 class ASTExprSingle : public ASTNode {
 private:
     ASTNode* var_;
@@ -292,6 +341,11 @@ public:
 	virtual int eval(Environment<int>& env);
 };
 
+/**
+ *  ASTExprComma:
+ *      comma expression, like:
+ *          a = 1, b++;
+ */
 class ASTExprComma : public ASTNode {
 private:
     ASTNode* expra_;
@@ -310,6 +364,10 @@ public:
 	virtual int eval(Environment<int>& env);
 };
 
+/**
+ *  ASTExprCallFunc:
+ *      function call, like: printf("%d", a);
+ */
 class ASTExprCallFunc : public ASTNode {
 private:
     ASTNode* var_;
@@ -332,6 +390,12 @@ public:
 	virtual int eval(Environment<int>& env);
 };
 
+/**
+ *  ASTExpression:
+ *      compute expression, like:
+ *          1 + 2 / 3 - 4;
+ *          a++ +b - c--;
+ */
 class ASTExpression : public ASTNode {
 private:
     Token op_;

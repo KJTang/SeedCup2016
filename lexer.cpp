@@ -21,7 +21,7 @@ bool Lexer::Lex() {
     do {
         result = this->LexToken();
     } while (result != Token::END_OF_FILE);
-	return true;
+    return true;
 }
 
 Token Lexer::LexToken() {
@@ -246,7 +246,12 @@ Token Lexer::LexString() {
         }
         const_str += cur_char_;
         cur_char_ = raw_str_[pos_++];
-        if (cur_char_ == '\"' && const_str[const_str.size()-1] != '\\') {
+        if (cur_char_ == '\\') {
+            const_str += cur_char_;
+            cur_char_ = raw_str_[pos_++];
+            continue;
+        }
+        if (cur_char_ == '\"') {
             finished = true;
         }
     }

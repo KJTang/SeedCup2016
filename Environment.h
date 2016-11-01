@@ -4,6 +4,7 @@
 #include <unordered_map>
 using namespace std;
 
+// Environment use for simulate scope when evaluate
 template<typename T>
 class Environment {
 public:
@@ -11,17 +12,27 @@ public:
 		scopes_.push_back(unordered_map<string, T>());
 	}
 
+	// Check if var exists
 	bool is_var_exist(string var_name);
+	// Find var in scopes
 	T lookup_var(string var_name);
+	// Add a new var in current scope
 	bool add_var(string var_name);
+	// Update the var
 	bool update_var(string var_name, T value);
 
+	// Create a new scope when get in a new block
 	bool getin_new_scope();
+	// Delete a scope when get out the block
 	bool getout_a_scope();
 private:
 	vector<unordered_map<string, T>> scopes_;
+
+	// Helper method to recursion of checking if var exists
 	bool is_var_exist(string var_name, int scope_layer);
+	// Helper method to recursion of looking up var
 	T lookup_var(string var_name, int scope_layer);
+	// Helper method to recursion of update var
 	bool update_var(string var_name, T value, int scope_layer);
 	int cur_scope_;
 };

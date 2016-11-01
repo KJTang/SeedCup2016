@@ -51,8 +51,10 @@ public:
     void set_line(int line) { line_ = line; }
     int get_line() { return line_; }
 
+	// Check if this node is a variable, override by subclass
 	virtual bool is_variable() { return false; }
 
+	// Evaluate the node, override by subclass
 	virtual int eval(Environment<int>& env) { return 0; }
 };
 

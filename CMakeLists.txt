@@ -7,4 +7,4 @@ set(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -std=c++11 -g -ggdb")
 set(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O2 -std=c++11")
 
 aux_source_directory(. DIR_SRCS)
-add_executable(a.out ${DIR_SRCS})
+add_executable(SeedCup2016 ${DIR_SRCS})

@@ -7,11 +7,11 @@
 #include "parser.h"
 #include "Evaluator.h"
 
-int main_t(int argc, char *args[]) {
+int main(int argc, char *args[]) {
     Lexer lexer;
     Parser parser;
 
-	std::ifstream fin("input.txt");
+	std::ifstream fin(args[1]);
     // compiler input & lexer input
     std::string input_str((std::istreambuf_iterator<char>(fin)), std::istreambuf_iterator<char>());
     // lexer output & parser input

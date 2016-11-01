@@ -504,13 +504,12 @@ ASTNode* Parser::ParseExprCallfunc(ASTNode* var) {
     do {
         cur_token_ = tokens_[pos_++];       // eat '(' or ','
         ASTNode* expr = ParseExpression();
+        if (cur_token_->type == static_cast<Token>('=')) {
+            expr = ParseStatAssign(expr);
+        }
         parameters.push_back(expr);
-    } while (cur_token_->type == static_cast<Token>(','));
-    if (cur_token_->type != static_cast<Token>(')')) {
-        //
-    } else {
-        cur_token_ = tokens_[pos_++];
-    }
+    } while (cur_token_->type != static_cast<Token>(')'));
+    cur_token_ = tokens_[pos_++];
     special_comma_flag = false;
     return new ASTExprCallFunc(line, var, parameters);
 }

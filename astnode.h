@@ -156,14 +156,18 @@ public:
     ASTStatIf(int line, ASTNode* condition, ASTNode* if_block, ASTNode* else_block) : condition_(condition), if_block_(if_block), else_block_(else_block) {
         set_line(line);
         condition_->set_parent(this);
-        if_block_->set_parent(this);
+        if (if_block_) {
+            if_block_->set_parent(this);
+        }
         if (else_block_) {
             else_block_->set_parent(this);
         }
     }
     ~ASTStatIf() {
         delete condition_;
-        delete if_block_;
+        if (if_block_) {
+            delete if_block_;
+        }
         if (else_block_) {
             delete else_block_;
         }
@@ -180,11 +184,15 @@ public:
     ASTStatWhile(int line, ASTNode* condition, ASTNode* block) : condition_(condition), block_(block) {
         set_line(line);
         condition_->set_parent(this);
-        block_->set_parent(this);
+        if (block_) {
+            block_->set_parent(this);
+        }
     }
     ~ASTStatWhile() {
         delete condition_;
-        delete block_;
+        if (block_) {
+            delete block_;
+        }
     }
     
 	virtual int eval(Environment<int>& env);
@@ -197,11 +205,15 @@ private:
 public:
     ASTStatDo(int line, ASTNode* block, ASTNode* condition) : block_(block), condition_(condition) {
         set_line(line);
-        block_->set_parent(this);
+        if (block_) {
+            block_->set_parent(this);
+        }
         condition_->set_parent(this);
     }
     ~ASTStatDo() {
-        delete block_;
+        if (block_) {
+            delete block_;
+        }
         delete condition_;
     }
 
@@ -226,7 +238,9 @@ public:
         if (increase_) {
             increase_->set_parent(this);
         }
-        block_->set_parent(this);
+        if (block_) {
+            block_->set_parent(this);
+        }
     }
     ~ASTStatFor() {
         if (init_) {
@@ -238,7 +252,9 @@ public:
         if (increase_) {
             delete increase_;
         }
-        delete block_;
+        if (block_) {
+            delete block_;
+        }
     }
     
 	virtual int eval(Environment<int>& env);

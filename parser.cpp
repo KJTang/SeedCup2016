@@ -58,7 +58,7 @@ ASTNode* Parser::ParseStatement() {
         }
         case static_cast<Token>(';'): {
             cur_token_ = tokens_[pos_++];
-            return ParseStatement();
+            return nullptr;
         }
         case Token::IDENTIFIER: {
             if (tokens_[pos_]->type == static_cast<Token>('=')) {
@@ -172,7 +172,9 @@ ASTNode* Parser::ParseStatIf() {
         if_block = ParseBlock();
     } else {
         if_block = ParseStatement();
-        cur_token_ = tokens_[pos_++];           // eat ';'
+        if (if_block && cur_token_->type == static_cast<Token>(';')) {
+            cur_token_ = tokens_[pos_++];           // eat ';'
+        }
     }
     ASTNode* else_block = nullptr;
     if (cur_token_->type == Token::KEYWORD_ELSE) {
@@ -180,7 +182,14 @@ ASTNode* Parser::ParseStatIf() {
         if (cur_token_->type == static_cast<Token>('{')) {
             else_block = ParseBlock();
         } else {
-            else_block = ParseStatement();
+            if (cur_token_->type != Token::KEYWORD_IF) {
+                else_block = ParseStatement();
+                if (else_block && cur_token_->type == static_cast<Token>(';')) {
+                    cur_token_ = tokens_[pos_++];       // eat ';'
+                }
+            } else {
+                else_block = ParseStatement();
+            }
         }
     }
     special_comma_flag = false;
@@ -211,6 +220,9 @@ ASTNode* Parser::ParseStatWhile() {
         block = ParseBlock();
     } else {
         block = ParseStatement();
+        if (block && cur_token_->type == static_cast<Token>(';')) {
+            cur_token_ = tokens_[pos_++];   // eat ';'
+        }
     }
     special_comma_flag = false;
     return new ASTStatWhile(line, condition, block);
@@ -225,7 +237,9 @@ ASTNode* Parser::ParseStatDo() {
         block = ParseBlock();
     } else {
         block = ParseStatement();
-		cur_token_ = tokens_[pos_++];           // eat ";"
+        if (block && cur_token_->type == static_cast<Token>(';')) {
+            cur_token_ = tokens_[pos_++];   // eat ";"
+        }
     }
     cur_token_ = tokens_[pos_++];           // eat "while"
     std::stack<ASTNode*> condition_stack;
@@ -317,6 +331,9 @@ ASTNode* Parser::ParseStatFor() {
         block = ParseBlock();
     } else {
         block = ParseStatement();
+        if (block) {
+            cur_token_ = tokens_[pos_++];
+        }
     }
 
     special_comma_flag = false;

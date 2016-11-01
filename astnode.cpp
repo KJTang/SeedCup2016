@@ -5,7 +5,9 @@ bool Evaluator::FLAG_BREAK;
 int ASTBlock::eval(Environment<int>& env) {
 	env.getin_new_scope();
 	for (auto stat : statements_) {
-		stat->eval(env);
+		if (stat) {
+			stat->eval(env);
+		}
 		if (Evaluator::FLAG_BREAK) {
 			break;
 		}
@@ -47,8 +49,10 @@ int ASTStatAssign::eval(Environment<int>& env) {
 int ASTStatIf::eval(Environment<int>& env) {
 	Evaluator::push_line(get_line());
 	int flag = 1;
-	if (condition_->eval(env) && if_block_) {
-		flag = if_block_->eval(env);
+	if (condition_->eval(env)) {
+		if (if_block_) {
+			flag = if_block_->eval(env);
+		}
 	}
 	else {
 		if (else_block_) {
@@ -113,14 +117,19 @@ int ASTStatBreak::eval(Environment<int>& env) {
 
 int ASTExprSingle::eval(Environment<int>& env) {
 	Evaluator::push_line(get_line());
-	char first = var_->get_value().at(0);
 	int temp;
-	if (first <= '9' && first >= '0') {
-		temp = stoi(var_->get_value());
+	if (var_->is_variable()) {
+		char first = var_->get_value().at(0);
+		if (first <= '9' && first >= '0') {
+			temp = stoi(var_->get_value());
+		}
+		else {
+			assert(env.is_var_exist(var_->get_value()));
+			temp = env.lookup_var(var_->get_value());
+		}
 	}
 	else {
-		assert(env.is_var_exist(var_->get_value()));
-		temp = env.lookup_var(var_->get_value());
+		temp = var_->eval(env);
 	}
 	switch (op_)
 	{

@@ -168,19 +168,75 @@ TEST(DY, control4) {
 //	);
 //}
 
-//TEST(DY, test3) {
-//	EXPECT_STREQ(
-//		cctest("input/dy-test-3.c").c_str(),
-//		"2 3 4 6 9 10 11 12 13 14 15 16 17 18 20 21 22 23 24 25 26 27 28 30 31 33 35 41"
-//	);
-//}
+TEST(DY, test3) {
+	EXPECT_STREQ(
+		cctest("input/dy-test-3.c").c_str(),
+		"2 3 4 6 9 10 11 12 13 14 15 16 17 18 20 21 22 23 24 25 26 27 28 30 31 33 35 41"
+	);
+}
 
 TEST(DY, test4) {
 	EXPECT_STREQ(
 		cctest("input/dy-test-4.c").c_str(),
-		"1 4 5 7 8 11 13 15 16 19 22 24 25 31 32"
+		"1 4 5 7 8 11 13 15 16 19 22 23 24 25 31 32 34"
 	);
 }
+
+TEST(DY, loop1) {
+	EXPECT_STREQ(
+		cctest("input/loop_1.txt").c_str(),
+		"2 3"
+	);
+}
+
+TEST(DY, loop2) {
+	EXPECT_STREQ(
+		cctest("input/loop_2.txt").c_str(),
+		"1 2 3 2 3 2"
+	);
+}
+
+TEST(DY, loop3) {
+	EXPECT_STREQ(
+		cctest("input/loop_3.txt").c_str(),
+		"1 4 5 6 7"
+	);
+}
+
+TEST(DY, loop4) {
+	EXPECT_STREQ(
+		cctest("input/loop_4.txt").c_str(),
+		"3 4 5 6 5 6 5 6 5 3 4 5 6 5 6 5 6 5 3"
+	);
+}
+
+TEST(DY, test6) {
+	EXPECT_STREQ(
+		cctest("input/sample6.txt").c_str(),
+		"1 2 4"
+	);
+}
+
+TEST(DY, test7) {
+	EXPECT_STREQ(
+		cctest("input/sample7.txt").c_str(),
+		"1 3 4"
+	);
+}
+
+TEST(DY, test8) {
+	EXPECT_STREQ(
+		cctest("input/sample8.txt").c_str(),
+		"6 12"
+	);
+}
+
+//TEST(DY, systest1) {
+//	EXPECT_STREQ(
+//		cctest("systest_in/cal.c").c_str(),
+//		""
+//	);
+//}
 
 int main(int argc, char *args[]) {
 	::testing::InitGoogleTest(&argc, args);

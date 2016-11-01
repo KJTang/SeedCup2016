@@ -51,6 +51,8 @@ public:
     void set_line(int line) { line_ = line; }
     int get_line() { return line_; }
 
+	virtual bool is_variable() { return false; }
+
 	virtual int eval(Environment<int>& env) { return 0; }
 };
 
@@ -80,6 +82,8 @@ public:
         set_value(value);
     }
     ~ASTConstInt() {}
+
+	virtual bool is_variable() { return true; }
     
 	virtual int eval(Environment<int>& env);
 };
@@ -102,6 +106,8 @@ public:
         set_value(var_name);
     }
     ~ASTVariable() {}
+
+	virtual bool is_variable() { return true; }
 
 	virtual int eval(Environment<int>& env);
 };

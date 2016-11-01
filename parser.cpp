@@ -352,6 +352,7 @@ ASTNode* Parser::ParseStatBreak() {
 
 ASTNode* Parser::ParseExpression() {
     int line = cur_token_->line;
+    // use Dijkstra's two-stack algorithm
     std::stack<ASTNode*> var_stack;
     std::stack<Token> op_stack;
 

@@ -75,6 +75,7 @@ private:
     TokenStruct* cur_token_;
     int pos_ = 0;
 
+    // parse different syntax, see the ebnf
     ASTNode* ParseStatement();
     ASTNode* ParseBlock();
 

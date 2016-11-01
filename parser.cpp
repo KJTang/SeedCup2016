@@ -60,6 +60,9 @@ ASTNode* Parser::ParseStatement() {
             cur_token_ = tokens_[pos_++];
             return nullptr;
         }
+        case static_cast<Token>('{'): {
+            return ParseBlock();
+        }
         case Token::IDENTIFIER: {
             if (tokens_[pos_]->type == static_cast<Token>('=')) {
                 return ParseStatAssign(ParseVariable());

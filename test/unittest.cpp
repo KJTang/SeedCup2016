@@ -273,7 +273,7 @@ TEST(DY, print_tri) {
 	);
 }
 
-int main_test(int argc, char *args[]) {
+int main(int argc, char *args[]) {
 	::testing::InitGoogleTest(&argc, args);
 	RUN_ALL_TESTS();
 

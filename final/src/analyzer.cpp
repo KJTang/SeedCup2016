@@ -52,9 +52,9 @@ double Analyzer::analysis_describe(const std::vector<std::string>& d1, const std
 
     // analysis
     double similarity = 0.0;
-    // if (merged_d1.size() == 0 || merged_d2.size() == 0) {
-    //     similarity = 0.0;
-    // } else 
+    if (merged_d1.size() == 0 || merged_d2.size() == 0) {
+        similarity = 0.0;
+    } else 
     if (merged_d1[0] == "null" || merged_d2[0] == "null") {
         similarity = 0.0;
     } else {

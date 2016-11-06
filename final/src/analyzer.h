@@ -6,14 +6,6 @@
 
 #include "product.h"
 
-static void print(const std::vector<std::string> v) {
-    std::cout<<"-----"<<std::endl;
-    for (auto str : v) {
-        std::cout<<str<<std::endl;
-    }
-    std::cout<<"-----"<<std::endl;
-}
-
 class Analyzer {
 private:
     static constexpr double ratio_[5] = {0.0, 0.6, 0.1, 0.1, 0.2};

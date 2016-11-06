@@ -1,6 +1,6 @@
-﻿#include <iostream>
-#include <sstream>
+﻿#include <sstream>
 #include <fstream>
+#include <iostream>
 
 #include "analyzer.h"
 #include "product.h"
@@ -40,6 +40,7 @@ int main(int argc, char const *argv[]) {
     tokenizer.tokenize();
     cout << endl;
     cout << tokenizer.get_product1() << endl;
+
 
     return 0;
 }

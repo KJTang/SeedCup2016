@@ -4,6 +4,7 @@
 #define __TOKENIZER_H__
 #include <cppjieba/Jieba.hpp>
 #include <vector>
+#include "product.h"
 
 using namespace std;
 
@@ -14,11 +15,11 @@ public:
   }
   void tokenize();
 
-  vector<vector<string>> get_product1() {
-    return product1;
+  Product get_product1() {
+    return product_1;
   }
-  vector<vector<string>> get_product2() {
-    return product2;
+  Product get_product2() {
+    return product_2;
   }
  
 private:
@@ -32,6 +33,8 @@ private:
 
   vector<vector<string>> product1;
   vector<vector<string>> product2;
+  Product product_1;
+  Product product_2;
 
   void split(const std::string &s, char delim, std::vector<std::string> &elems);
   std::vector<std::string> split(const std::string &s, char delim);

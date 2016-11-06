@@ -79,17 +79,29 @@ void Tokenizer::tokenize() {
   //cout << title1 << endl << title2 << endl;
   cout << title_1 << endl << title_2 << endl;
 
-  product1.push_back(id_[0]);
-  product1.push_back(brand_[0]);
-  product1.push_back(series_[0]);
-  product1.push_back(markid_[0]);
-  product1.push_back(title_[0]);
+  //product1.push_back(id_[0]);
+  //product1.push_back(brand_[0]);
+  //product1.push_back(series_[0]);
+  //product1.push_back(markid_[0]);
+  //product1.push_back(title_[0]);
 
-  product2.push_back(id_[1]);
-  product2.push_back(brand_[1]);
-  product2.push_back(series_[1]);
-  product2.push_back(markid_[1]);
-  product2.push_back(title_[1]);
+  product_1.id_ = id_[0];
+  product_1.brand_ = brand_[0];
+  product_1.type_ = series_[0];
+  product_1.ext_ = markid_[0];
+  product_1.title_ = title_[0];
+
+  product_2.id_ = id_[1];
+  product_2.brand_ = brand_[1];
+  product_2.type_ = series_[1];
+  product_2.ext_ = markid_[1];
+  product_2.title_ = title_[1];
+
+  //product2.push_back(id_[1]);
+  //product2.push_back(brand_[1]);
+  //product2.push_back(series_[1]);
+  //product2.push_back(markid_[1]);
+  //product2.push_back(title_[1]);
 }
 
 vector<string> Tokenizer::seperate_one_line(string line) {

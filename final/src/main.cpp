@@ -39,7 +39,7 @@ int main(int argc, char const *argv[]) {
     Tokenizer tokenizer(input_str);
     tokenizer.tokenize();
     cout << endl;
-    cout << tokenizer.get_product1() << endl;
+    cout << tokenizer.get_product1().title_ << endl;
 
 
     return 0;

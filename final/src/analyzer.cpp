@@ -1,27 +1,33 @@
 #include "analyzer.h"
 
+#include <algorithm>
+
 const double MERGE_RANGE = 0.9;
 
 int min3(int a, int b, int c){
-    if(a<b){
-        if(a<c) return a;
+    if (a < b) {
+        if (a < c) return a;
         else return c;
     }
-    if(a>b){
-        if(b<c) return b;
+    if(a > b) {
+        if (b < c) return b;
         else return c;
     }
 }
 
 double Analyzer::analysis(const Product& p1, const Product& p2) {
-    // test
-    std::vector<std::string> t1, t2;
-    t1.push_back("hello");
-    t1.push_back("world");
-    t1.push_back("aha");
-    t1.push_back("cpp");
-    t2 = t1;
-    analysis_describe(t1, t2);
+    std::cout<<analysis_string("ashello", "hello")<<std::endl;
+    std::cout<<analysis_string("壳氏唯", "壳氏唯 ")<<std::endl;
+    std::cout<<analysis_string("HUSKS WARE", "Husk’Sware")<<std::endl;
+
+    // // test
+    // std::vector<std::string> t1, t2;
+    // t1.push_back("hello");
+    // t1.push_back("world");
+    // t1.push_back("aha");
+    // t1.push_back("cpp");
+    // t2 = t1;
+    // analysis_describe(t1, t2);
 
     // double similarity = 0.0;
     // double s_id = analysis_describe(p1.id_, p2.id_);
@@ -56,28 +62,43 @@ double Analyzer::analysis_describe(const std::vector<std::string>& d1, const std
     return 0;
 }
 
-double Analyzer::analysis_string(const std::string& str1, const std::string& str2) {
-    int i, j;
-    int k1 = str1.size();
-    int k2 = str2.size();
-    int Vec[k1+1][k2+1];
-    for(i=0; i<=k1; i++){
+double Analyzer::analysis_string(const std::string& s1, const std::string& s2) {
+    std::string str1 = s1;
+    std::string str2 = s2;
+    int len1 = str1.size();
+    int len2 = str2.size();
+
+    // trans to low-case
+    for (int i = 0; i != len1; ++i) {
+        if (str1[i] >= 'A' && str1[i] <= 'Z') {
+            str1[i] = str1[i] + 'a' - 'A';
+        }
+    }
+    for (int i = 0; i != len2; ++i) {
+        if (str2[i] >= 'A' && str2[i] <= 'Z') {
+            str2[i] = str2[i] + 'a' - 'A';
+        }
+    }
+
+    // init matrix
+    int Vec[len1+1][len2+1];
+    for (int i = 0; i <= len1; ++i) {
         Vec[i][0] = i;
     }
-    for(j=0; j<=k2; j++){
+    for (int j = 0; j <= len2; ++j) {
         Vec[0][j] = j;
     }
 
-    for(j=1; j<=k2; j++){
-        for(i=1; i<=k1; i++){
-            if(str1[i-1] == str2[j-1]){
+    // compute matrix
+    for (int j = 1; j <= len2; ++j) {
+        for (int i = 1; i <= len1; ++i) {
+            if (str1[i-1] == str2[j-1]){
                 Vec[i][j] = min3(Vec[i-1][j-1], Vec[i-1][j]+1, Vec[i][j-1]+1);
-            }
-            else{
+            } else {
                 Vec[i][j] = min3(Vec[i-1][j-1], Vec[i-1][j], Vec[i][j-1])+1;
             }
         }
     }
 
-    return Vec[k1][k2];
+    return 1.0 - (double)Vec[len1][len2] / (double)std::max(str1.size(), str2.size());
 }

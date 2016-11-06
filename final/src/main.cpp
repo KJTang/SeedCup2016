@@ -40,6 +40,7 @@ int main(int argc, char const *argv[]) {
     tokenizer.tokenize();
     //cout << endl;
     //cout << tokenizer.get_product1().title_ << endl;
+    //cout << tokenizer.get_product2().title_ << endl;
 
 
     return 0;

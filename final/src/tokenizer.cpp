@@ -67,10 +67,20 @@ void Tokenizer::tokenize() {
   vector<pair<string, string>> title1, title2;
   jieba.Tag(token1[4], title1);
   jieba.Tag(token2[4], title2);
-
   vector<string> title_1, title_2;
-  jieba.Cut(token1[4], title_1);
-  jieba.Cut(token2[4], title_2);
+  for (auto n : title1) {
+    if (n.second != "x" && n.second != "r" && n.second != "uj" && n.second != "v") {
+      title_1.push_back(n.first);
+    }
+  }
+  for (auto n : title2) {
+    if (n.second != "x" && n.second != "r" && n.second != "uj" && n.second != "v") {
+      title_2.push_back(n.first);
+    }
+  }
+
+  //jieba.Cut(token1[4], title_1);
+  //jieba.Cut(token2[4], title_2);
 
   vector<string> title1_f, title2_f;
   for (auto n : title_1) {

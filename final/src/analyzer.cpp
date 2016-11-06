@@ -2,6 +2,17 @@
 
 const double MERGE_RANGE = 0.9;
 
+int min3(int a, int b, int c){
+    if(a<b){
+        if(a<c) return a;
+        else return c;
+    }
+    if(a>b){
+        if(b<c) return b;
+        else return c;
+    }
+}
+
 double Analyzer::analysis(const Product& p1, const Product& p2) {
     // test
     std::vector<std::string> t1, t2;
@@ -46,5 +57,27 @@ double Analyzer::analysis_describe(const std::vector<std::string>& d1, const std
 }
 
 double Analyzer::analysis_string(const std::string& str1, const std::string& str2) {
-    return 0;
+    int i, j;
+    int k1 = str1.size();
+    int k2 = str2.size();
+    int Vec[k1+1][k2+1];
+    for(i=0; i<=k1; i++){
+        Vec[i][0] = i;
+    }
+    for(j=0; j<=k2; j++){
+        Vec[0][j] = j;
+    }
+
+    for(j=1; j<=k2; j++){
+        for(i=1; i<=k1; i++){
+            if(str1[i-1] == str2[j-1]){
+                Vec[i][j] = min3(Vec[i-1][j-1], Vec[i-1][j]+1, Vec[i][j-1]+1);
+            }
+            else{
+                Vec[i][j] = min3(Vec[i-1][j-1], Vec[i-1][j], Vec[i][j-1])+1;
+            }
+        }
+    }
+
+    return Vec[k1][k2];
 }

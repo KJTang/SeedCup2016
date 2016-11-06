@@ -6,6 +6,8 @@
 
 #include "product.h"
 
+
+
 static void print(const std::vector<std::string> v) {
     std::cout<<"-----"<<std::endl;
     for (auto str : v) {

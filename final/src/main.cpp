@@ -33,13 +33,13 @@ int main(int argc, char const *argv[]) {
     //std::cout << limonp::Join(words.begin(), words.end(), "/") << std::endl;
 
     std::ifstream fin(argv[1]);
-    std::cout << argv[1] <<std::endl;
+    //std::cout << argv[1] <<std::endl;
     std::string input_str((std::istreambuf_iterator<char>(fin)), std::istreambuf_iterator<char>());
 
     Tokenizer tokenizer(input_str);
     tokenizer.tokenize();
-    cout << endl;
-    cout << tokenizer.get_product1().title_ << endl;
+    //cout << endl;
+    //cout << tokenizer.get_product1().title_ << endl;
 
 
     return 0;
